@@ -1,6 +1,5 @@
 #ifndef _QUADRIS_MODEL_H_
 #define _QUADRIS_MODEL_H_
-#include "quadris_model.h"
 #include "block.h"
 
 class QuadrisModel {

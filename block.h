@@ -1,6 +1,7 @@
 #ifndef _BLOCK_H_
 #define _BLOCK_H_
 #include <vector>
+#include <cell>
 
 class Block {
 public:
