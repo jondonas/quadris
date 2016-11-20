@@ -23,11 +23,12 @@ Block::Block(BlockType type, TextDisplay *td): td{td} {
   }
 }
 
-void init(vector<Cell> &cells, BlockType type, TextDisplay *td,
+void Block::init(vector<Cell> &cells, BlockType type, TextDisplay *td,
 vector<vector<int>> coords) {
   for (auto coord: coords) {
     Cell cell = Cell(coord[0], coord[1], type);
     cell.attach(td);
+    cell.notifyObservers(false);
     cells.push_back(cell);
   }
 }
@@ -54,17 +55,17 @@ void Block::clockwise() {
 void Block::cclockwise() {
 }
 
-void clear(vector<Cell> &cells) {
+void Block::clear(vector<Cell> &cells) {
   for (auto &cell: cells)
     cell.notifyObservers(true);
 }
 
-void draw(vector<Cell> &cells) {
+void Block::draw(vector<Cell> &cells) {
   for (auto &cell: cells)
     cell.notifyObservers(false);
 }
 
-void shift(vector<Cell> &cells, int rightBy, int downBy) {
+void Block::shift(vector<Cell> &cells, int rightBy, int downBy) {
   clear(cells);
   for (auto &cell: cells) {
     Info info = cell.getInfo();

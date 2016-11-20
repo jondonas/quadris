@@ -1,5 +1,4 @@
 #include "cell.h"
-#include <iostream>
 
 Cell::Cell(int x, int y, BlockType type): x{x}, y{y}, type{type} {}
 

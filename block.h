@@ -19,11 +19,10 @@ public:
 private:
   std::vector<Cell> cells;
   TextDisplay *td;
+  void init(vector<Cell> &, BlockType, TextDisplay *, vector<vector<int>>);
+  void clear(vector<Cell> &);
+  void draw(vector<Cell> &);
+  void shift(vector<Cell> &, int, int);
 };
-
-void init(vector<Cell> &, BlockType, TextDisplay *, vector<vector<int>>);
-void clear(vector<Cell> &);
-void draw(vector<Cell> &);
-void shift(vector<Cell> &, int, int);
 
 #endif
