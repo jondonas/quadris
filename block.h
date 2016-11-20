@@ -13,6 +13,7 @@ public:
   void right();
   void clockwise();
   void cclockwise();
+  void print();
 
 private:
   std::vector<Cell> cells;

@@ -21,6 +21,8 @@ private:
   int score;
   int seed;
   std::string sequence_file;
+  void nextBlock();
+  Block current_block;
 }
 
 #endif
