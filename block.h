@@ -17,6 +17,6 @@ public:
 
 private:
   std::vector<Cell> cells;
-}
+};
 
 #endif

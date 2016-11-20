@@ -1,6 +1,6 @@
 #ifndef _QUADRIS_H_
 #define _QUADRIS_H_
-//#include "quadris_model.h"
+#include "quadris_model.h"
 
 class Quadris {
 public:
@@ -8,7 +8,7 @@ public:
   void start();
 
 private:
-  //QuadrisModel model;
+  QuadrisModel model;
   int argc;
   char **argv;
   int level;

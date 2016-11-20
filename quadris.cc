@@ -33,7 +33,7 @@ void Quadris::start() {
     else if (cmd == "restart") {}
     else if (cmd == "hint") {}
     else {
-      for int (i = 0; i < mult; ++i) {
+      for (int i = 0; i < mult; ++i) {
         if (cmd == "levelup") {
           if (level < 4) {
             ++level;
