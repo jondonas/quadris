@@ -1,8 +1,8 @@
 #ifndef _BLOCK_H_
 #define _BLOCK_H_
 #include <vector>
-#include <cell>
 #include "block_type.h"
+#include "cell.h"
 
 class Block {
 public:
