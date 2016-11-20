@@ -1,5 +1,6 @@
 #ifndef _QUADRIS_MODEL_H_
 #define _QUADRIS_MODEL_H_
+#include <string>
 #include "block.h"
 
 class QuadrisModel {
@@ -9,20 +10,22 @@ public:
   void right();
   void left();
   void drop();
+  void clockwise();
+  void cclockwise();
   void levelUp();
   void levelDown();
   bool isOver();
 
 private:
   void clearRow();
-  std::vector<Block&> blocks;
+  std::vector<Block> blocks;
   int level;
   static int high_score;
   int score;
   int seed;
   std::string sequence_file;
-  void nextBlock();
   Block current_block;
-}
+  void nextBlock();
+};
 
 #endif

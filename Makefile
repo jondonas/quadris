@@ -1,6 +1,6 @@
 CXX = g++-5
 CXXFLAGS = -std=c++14
-OBJECTS = main.o quadris.o
+OBJECTS = main.o quadris.o block.o cell.o quadris_model.o
 DEPENDS = ${OBJECTS:.o=.d}
 EXEC = quadris
 

@@ -5,6 +5,6 @@
 struct Info {
   int x, y;
   BlockType type;
-}
+};
 
 #endif

@@ -1,31 +1,40 @@
 #include "quadris_model.h"
+#include <iostream>
 
-QuadrisModel::QuadrisModel() {
+QuadrisModel::QuadrisModel(): current_block{Block(BlockType::TBlock)} {
   score = 0;
   seed = 0;
   level = 0;
-  high_score = 0;
+  //high_score = 0;
   sequence_file = "yo mama";
-  nextBlock();
+  //nextBlock();
 }
 
 void QuadrisModel::down() {
-  currentBlock.down();
-  currentBlock.print();
+  current_block.down();
+  current_block.print();
 }
 
 void QuadrisModel::right() {
-  currentBlock.right();
-  currentBlock.print();
+  current_block.right();
+  current_block.print();
 }
 
 void QuadrisModel::left() {
-  currentBlock.left();
-  currentBlock.print();
+  current_block.left();
+  current_block.print();
 }
 
 void QuadrisModel::drop() {
 
+}
+
+void QuadrisModel::clockwise() {
+  current_block.clockwise();
+}
+
+void QuadrisModel::cclockwise() {
+  current_block.clockwise();
 }
 
 void QuadrisModel::levelUp() {
@@ -45,5 +54,5 @@ void QuadrisModel::clearRow() {
 }
 
 void nextBlock() {
-  current_block = Block.new(BlockType::TBlock);
+  //current_block = Block(BlockType::TBlock);
 }

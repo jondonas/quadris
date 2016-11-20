@@ -31,9 +31,9 @@ void Block::down() {
 }
 
 void Block::left() {
-  for(auto cell : cells) {
-    cell.left();
-  }
+  //for(auto cell : cells) {
+    cells[0].left();
+  //}
 }
 
 void Block::right() {
@@ -50,7 +50,7 @@ void Block::cclockwise() {
 
 void Block::print() {
   for(auto cell : cells) {
-    Info info = cell.getInfo;
-    cout << "There is a cell at x: " << info.x << "y: " << info.y << endl;
+    Info info = cell.getInfo();
+    cout << "There is a cell at x: " << info.x << " y: " << info.y << endl;
   }
 }
