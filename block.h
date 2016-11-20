@@ -2,10 +2,11 @@
 #define _BLOCK_H_
 #include <vector>
 #include <cell>
+#include "block_type.h"
 
 class Block {
 public:
-  Block();
+  Block(BlockType type);
   std::vector<Cell> &positions();
   void down();
   void left();
