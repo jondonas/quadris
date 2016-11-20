@@ -14,4 +14,6 @@ private:
   int level;
 };
 
+bool cmdMatch(std::string, int, std::string);
+
 #endif

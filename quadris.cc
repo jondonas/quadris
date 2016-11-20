@@ -7,17 +7,6 @@ using namespace std;
 Quadris::Quadris(int argc, char *argv[]): argc{argc}, argv{argv}, 
   level{0}, model{QuadrisModel()} {}
 
-// allows for shorter commands: eg "lef" will work for "left"
-bool cmdMatch(string in, int min, string cmd) {
-  if (in.length() < min || in.length() > cmd.length())
-    return false;
-  for (int i = 0; i < in.length(); ++i) {
-    if (in[i] != cmd[i])
-      return false;
-  }
-  return true;
-}
-
 void Quadris::start() {
   string cmd, sequence_file;
   int mult;
@@ -76,4 +65,14 @@ void Quadris::start() {
     }
     cout << model;
   }
+}
+
+bool cmdMatch(string in, int min, string cmd) {
+  if (in.length() < min || in.length() > cmd.length())
+    return false;
+  for (int i = 0; i < in.length(); ++i) {
+    if (in[i] != cmd[i])
+      return false;
+  }
+  return true;
 }

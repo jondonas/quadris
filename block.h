@@ -4,7 +4,7 @@
 #include "block_type.h"
 #include "cell.h"
 #include "textdisplay.h"
-//class TextDisplay;
+using namespace std;
 
 class Block {
 public:
@@ -20,5 +20,10 @@ private:
   std::vector<Cell> cells;
   TextDisplay *td;
 };
+
+void init(vector<Cell> &, BlockType, TextDisplay *, vector<vector<int>>);
+void clear(vector<Cell> &);
+void draw(vector<Cell> &);
+void shift(vector<Cell> &, int, int);
 
 #endif

@@ -1,6 +1,7 @@
 #include "quadris_model.h"
 #include <iostream>
 
+// todo: make td a smart pointer
 QuadrisModel::QuadrisModel(): td{TextDisplay()}, 
 current_block{Block(BlockType::TBlock, &td)} {
   score = 0;

@@ -3,14 +3,14 @@
 #include "info.h"
 #include "block_type.h"
 #include "textdisplay.h"
+#include "subject.h"
 
-class Cell {
+class Cell: public Subject {
 public:
-  Cell(int, int, BlockType, TextDisplay *td);
-  Info getInfo();
+  Cell(int, int, BlockType);
+  Info getInfo() const override;
   void setCoords(int, int);
 private:
-  TextDisplay *td;
   int x;
   int y;
   BlockType type;
