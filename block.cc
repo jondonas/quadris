@@ -1,9 +1,10 @@
 #include "block.h"
+#include <iostream>
 using namespace std;
 
 Block::Block(BlockType type) {
   if (type == BlockType::TBlock) {
-
+    cells.push_back(Cell(0,0, type));
   } else if (type == BlockType::IBlock) {
 
   } else if (type == BlockType::JBlock) {
@@ -45,4 +46,11 @@ void Block::clockwise() {
 }
 
 void Block::cclockwise() {
+}
+
+void Block::print() {
+  for(auto cell : cells) {
+    Info info = cell.getInfo;
+    cout << "There is a cell at x: " << info.x << "y: " << info.y << endl;
+  }
 }
