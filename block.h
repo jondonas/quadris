@@ -8,7 +8,7 @@ using namespace std;
 
 class Block {
 public:
-  Block(BlockType type, TextDisplay *);
+  Block(BlockType type, TextDisplay *, bool heavy = false);
   std::vector<Cell> &positions();
   void down();
   void left();
@@ -22,6 +22,7 @@ private:
   void init(BlockType, vector<vector<int>>);
   void clear();
   void shift(int, int);
+  bool heavy;
 };
 
 #endif

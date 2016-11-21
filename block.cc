@@ -5,21 +5,22 @@
 #include <vector>
 using namespace std;
 
-Block::Block(BlockType type, TextDisplay *td): td{td} {
+Block::Block(BlockType type, TextDisplay *td, bool heavy): td{td}, heavy(heavy) {
   if (type == BlockType::TBlock) {
     init(type, {{0,0},{1,0},{2,0},{1,1}});
+    cout << "would have made an TBlock" << endl;
   } else if (type == BlockType::IBlock) {
-
+    cout << "would have made an IBlock" << endl;
   } else if (type == BlockType::JBlock) {
-
+    cout << "would have made an JBlock" << endl;
   } else if (type == BlockType::LBlock) {
-
+    cout << "would have made an LBlock" << endl;
   } else if (type == BlockType::OBlock) {
-
+    cout << "would have made an OBlock" << endl;
   } else if (type == BlockType::SBlock) {
-
+    cout << "would have made an SBlock" << endl;
   } else if (type == BlockType::ZBlock) {
-
+    cout << "would have made an ZBlock" << endl;
   }
 }
 
