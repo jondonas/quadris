@@ -1,10 +1,13 @@
 #include "block.h"
+#include "info.h"
+#include "block_type.h"
 #include <iostream>
+#include <vector>
 using namespace std;
 
-Block::Block(BlockType type) {
+Block::Block(BlockType type, TextDisplay *td): td{td} {
   if (type == BlockType::TBlock) {
-    cells.push_back(Cell(0,0, type));
+    init(cells, type, td, {{0,0},{1,0},{2,0},{1,1}});
   } else if (type == BlockType::IBlock) {
 
   } else if (type == BlockType::JBlock) {
@@ -20,26 +23,30 @@ Block::Block(BlockType type) {
   }
 }
 
+void Block::init(vector<Cell> &cells, BlockType type, TextDisplay *td,
+vector<vector<int>> coords) {
+  for (auto coord: coords) {
+    Cell cell = Cell(coord[0], coord[1], type);
+    cell.attach(td);
+    cell.notifyObservers(false);
+    cells.push_back(cell);
+  }
+}
+
 vector<Cell> &Block::positions() {
   return cells;
 }
 
 void Block::down() {
-  for(auto cell : cells) {
-    cell.down();
-  }
+  shift(cells, 0, 1);
 }
 
 void Block::left() {
-  //for(auto cell : cells) {
-    cells[0].left();
-  //}
+  shift(cells, -1, 0);
 }
 
 void Block::right() {
-  for(auto cell : cells) {
-    cell.right();
-  }
+  shift(cells, 1, 0);
 }
 
 void Block::clockwise() {
@@ -48,9 +55,21 @@ void Block::clockwise() {
 void Block::cclockwise() {
 }
 
-void Block::print() {
-  for(auto cell : cells) {
+void Block::clear(vector<Cell> &cells) {
+  for (auto &cell: cells)
+    cell.notifyObservers(true);
+}
+
+void Block::draw(vector<Cell> &cells) {
+  for (auto &cell: cells)
+    cell.notifyObservers(false);
+}
+
+void Block::shift(vector<Cell> &cells, int rightBy, int downBy) {
+  clear(cells);
+  for (auto &cell: cells) {
     Info info = cell.getInfo();
-    cout << "There is a cell at x: " << info.x << " y: " << info.y << endl;
+    cell.setCoords(info.x + rightBy, info.y + downBy);
   }
+  draw(cells);
 }

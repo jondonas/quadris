@@ -1,7 +1,9 @@
 #include "quadris_model.h"
 #include <iostream>
 
-QuadrisModel::QuadrisModel(): current_block{Block(BlockType::TBlock)} {
+// todo: make td a smart pointer
+QuadrisModel::QuadrisModel(): td{TextDisplay()}, 
+current_block{Block(BlockType::TBlock, &td)} {
   score = 0;
   seed = 0;
   level = 0;
@@ -12,17 +14,14 @@ QuadrisModel::QuadrisModel(): current_block{Block(BlockType::TBlock)} {
 
 void QuadrisModel::down() {
   current_block.down();
-  current_block.print();
 }
 
 void QuadrisModel::right() {
   current_block.right();
-  current_block.print();
 }
 
 void QuadrisModel::left() {
   current_block.left();
-  current_block.print();
 }
 
 void QuadrisModel::drop() {
@@ -55,4 +54,9 @@ void QuadrisModel::clearRow() {
 
 void nextBlock() {
   //current_block = Block(BlockType::TBlock);
+}
+
+std::ostream &operator<<(std::ostream &out, const QuadrisModel &model) {
+  std::cout << model.td;
+  return out;
 }

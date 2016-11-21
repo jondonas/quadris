@@ -2,14 +2,14 @@
 #define _CELL_H_
 #include "info.h"
 #include "block_type.h"
+#include "textdisplay.h"
+#include "subject.h"
 
-class Cell {
+class Cell: public Subject {
 public:
   Cell(int, int, BlockType);
-  Info getInfo();
-  void down();
-  void left();
-  void right();
+  Info getInfo() const override;
+  void setCoords(int, int);
 private:
   int x;
   int y;
