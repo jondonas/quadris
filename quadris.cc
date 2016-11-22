@@ -4,8 +4,7 @@
 #include "quadris.h"
 using namespace std;
 
-Quadris::Quadris(int argc, char *argv[]): argc{argc}, argv{argv}, 
-  level{0}, model{QuadrisModel()} {}
+Quadris::Quadris(int argc, char *argv[]): argc{argc}, argv{argv}, model{QuadrisModel()} {}
 
 void Quadris::start() {
   string cmd, sequence_file;
@@ -14,8 +13,6 @@ void Quadris::start() {
 
   while (cin >> cmd) {
     mult = 1;
-    cmdIssued = false;
-    heavy = false;
 
     if (47 < cmd[0] && cmd[0] < 58) {
       string num = "";
@@ -36,38 +33,23 @@ void Quadris::start() {
     else if (cmdMatch(cmd, 2, "random")) {}
     else if (cmdMatch(cmd, 2, "restart")) {}
     else if (cmdMatch(cmd, 1, "hint")) {}
-    else {
-      for (int i = 0; i < mult; ++i) {
-        if (cmdMatch(cmd, 6, "levelup")) {
-          if (level < 4) {
-            ++level;
-            //model.levelup();
-          }
-        }
-        else if (cmdMatch(cmd, 6, "leveldown")) {
-          if (level > 0) {
-            --level;
-            //model.leveldown();
-          }
-        }
-        else if (cmdMatch(cmd, 3, "left"))
-          model.left();
-        else if (cmdMatch(cmd, 2, "right"))
-          model.right();
-        else if (cmdMatch(cmd, 2, "down"))
-          model.down();
-        else if (cmdMatch(cmd, 2, "drop"))
-          model.drop();
-        else if (cmdMatch(cmd, 2, "clockwise"))
-          model.clockwise();
-        else if (cmdMatch(cmd, 2, "cclockwise"))
-          model.cclockwise();
-      }
-
-      if (level >= 3 && heavy)
-        model.down();
-    }
-    if (!cmdIssued)
+    else if (cmdMatch(cmd, 6, "levelup"))
+      model.levelUp(mult);
+    else if (cmdMatch(cmd, 6, "leveldown"))
+      model.levelDown(mult);
+    else if (cmdMatch(cmd, 3, "left"))
+      model.left(mult);
+    else if (cmdMatch(cmd, 2, "right"))
+      model.right(mult);
+    else if (cmdMatch(cmd, 2, "down"))
+      model.down(mult);
+    else if (cmdMatch(cmd, 2, "drop"))
+      model.drop(mult);
+    else if (cmdMatch(cmd, 2, "clockwise"))
+      model.clockwise(mult);
+    else if (cmdMatch(cmd, 2, "cclockwise"))
+      model.cclockwise(mult);
+    else
       cout << "Invalid or ambiguous command" << endl;
     
     cout << model;
@@ -81,8 +63,5 @@ bool Quadris::cmdMatch(string in, int min, string cmd) {
     if (in[i] != cmd[i])
       return false;
   }
-  if (cmd != "levelup" && cmd != "leveldown")
-    heavy = true;
-  cmdIssued = true;
   return true;
 }
