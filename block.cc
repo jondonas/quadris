@@ -53,11 +53,25 @@ void Block::right() {
 }
 
 void Block::clockwise() {
-  rotate(true);
+  clear();
+  vector<int> vals = maxMin();
+  for (auto &cell: cells) {
+    Info info = cell.getInfo();
+    cell.setCoords(info.x - (info.x - vals[3]) + (vals[2] - info.y),
+                   info.y - (vals[1] - info.x) + (vals[2] - info.y));
+    cell.notifyObservers(false);
+  }
 }
 
 void Block::cclockwise() {
-  rotate(false);
+  clear();
+  vector<int> vals = maxMin();
+  for (auto &cell: cells) {
+    Info info = cell.getInfo();
+    cell.setCoords(info.x - (info.x - vals[3]) + (info.y - vals[0]),
+                   info.y - (info.x - vals[3]) + (vals[2] - info.y));
+    cell.notifyObservers(false);
+  }
 }
 
 void Block::clear() {
@@ -87,25 +101,4 @@ vector<int> Block::maxMin() const {
   auto y_result = minmax_element(y_vals.begin(), y_vals.end());
 
   return {*y_result.first, *x_result.second, *y_result.second, *x_result.first};
-}
-
-void Block::rotate(bool clockwise) {
-  clear();
-  vector<int> vals = maxMin();
-  if (clockwise) {
-    for (auto &cell: cells) {
-      Info info = cell.getInfo();
-      cell.setCoords(info.x - (info.x - vals[3]) + (vals[2] - info.y),
-                     info.y - (vals[1] - info.x) + (vals[2] - info.y));
-      cell.notifyObservers(false);
-    }
-  }
-  else {
-    for (auto &cell: cells) {
-      Info info = cell.getInfo();
-      cell.setCoords(info.x - (info.x - vals[3]) + (info.y - vals[0]),
-                     info.y - (info.x - vals[3]) + (vals[2] - info.y));
-      cell.notifyObservers(false);
-    }
-  }
 }
