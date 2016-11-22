@@ -14,6 +14,9 @@ void Quadris::start() {
 
   while (cin >> cmd) {
     mult = 1;
+    cmdIssued = false;
+    heavy = false;
+
     if (47 < cmd[0] && cmd[0] < 58) {
       string num = "";
       int i = 0;
@@ -43,7 +46,7 @@ void Quadris::start() {
         }
         else if (cmdMatch(cmd, 6, "leveldown")) {
           if (level > 0) {
-            ++level;
+            --level;
             //model.leveldown();
           }
         }
@@ -57,22 +60,29 @@ void Quadris::start() {
           model.drop();
         else if (cmdMatch(cmd, 2, "clockwise"))
           model.clockwise();
-        else if (cmdMatch(cmd, 2,"cclockwise"))
+        else if (cmdMatch(cmd, 2, "cclockwise"))
           model.cclockwise();
-        else
-          cout << "Invalid or ambiguous command" << endl;
       }
+
+      if (level >= 3 && heavy)
+        model.down();
     }
+    if (!cmdIssued)
+      cout << "Invalid or ambiguous command" << endl;
+    
     cout << model;
   }
 }
 
-bool cmdMatch(string in, int min, string cmd) {
+bool Quadris::cmdMatch(string in, int min, string cmd) {
   if (in.length() < min || in.length() > cmd.length())
     return false;
   for (int i = 0; i < in.length(); ++i) {
     if (in[i] != cmd[i])
       return false;
   }
+  if (cmd != "levelup" && cmd != "leveldown")
+    heavy = true;
+  cmdIssued = true;
   return true;
 }

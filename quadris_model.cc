@@ -38,7 +38,7 @@ void QuadrisModel::clockwise() {
 }
 
 void QuadrisModel::cclockwise() {
-  current_block.clockwise();
+  current_block.cclockwise();
 }
 
 void QuadrisModel::levelUp() {
