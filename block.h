@@ -18,8 +18,9 @@ public:
 
 private:
   std::vector<Cell> cells;
+  BlockType type;
   TextDisplay *td;
-  void init(BlockType, vector<vector<int>>);
+  void init(vector<vector<int>>);
   void clear();
   void shift(int, int);
   bool heavy;
