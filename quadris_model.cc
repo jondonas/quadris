@@ -17,44 +17,62 @@ current_block{Block(BlockType::Empty, &td)} {
   nextBlock();
 }
 
-void QuadrisModel::down() {
-  current_block.down();
+void QuadrisModel::down(int m) {
+  for (int i = 0; i < m; ++i)
+    current_block.down();
 }
 
-void QuadrisModel::right() {
-  current_block.right();
+void QuadrisModel::right(int m) {
+  for (int i = 0; i < m; ++i)
+    current_block.right();
+  // takes care of heaviness - all we need
+  if (level >= 3)
+    down(1);
 }
 
-void QuadrisModel::left() {
-  current_block.left();
+void QuadrisModel::left(int m) {
+  for (int i = 0; i < m; ++i)
+    current_block.left();
+  if (level >= 3)
+    down(1);
 }
 
-void QuadrisModel::drop() {
+void QuadrisModel::drop(int m) {
+  //for (int i = 0; i < m; ++i)
+    //current_block.drop();
 
 }
 
-void QuadrisModel::clockwise() {
-  current_block.clockwise();
+void QuadrisModel::clockwise(int m) {
+  for (int i = 0; i < m; ++i)
+    current_block.clockwise();
+  if (level >= 3)
+    down(1);
 }
 
-void QuadrisModel::cclockwise() {
-  current_block.cclockwise();
+void QuadrisModel::cclockwise(int m) {
+  for (int i = 0; i < m; ++i)
+    current_block.cclockwise();
+  if (level >= 3)
+    down(1);
 }
 
-void QuadrisModel::levelUp() {
-  if (level != 4) {
-    ++level;
+void QuadrisModel::levelUp(int m) {
+  for (int i = 0; i < m; ++i) {
+    if (level != 4)
+      ++level;
   }
 }
 
-void QuadrisModel::levelDown() {
-  if (level != 0) {
-    --level;
+void QuadrisModel::levelDown(int m) {
+  for (int i = 0; i < m; ++i) {
+    if (level != 0)
+      --level;
   }
 }
 
 bool QuadrisModel::isOver() {
-  false;
+  return false;
 }
 
 void QuadrisModel::clearRow() {
@@ -120,19 +138,19 @@ void QuadrisModel::nextBlock() {
     }
   } else {
     if (random <= 2.0/9.0) {
-      current_block = Block(BlockType::ZBlock, &td, true);
+      current_block = Block(BlockType::ZBlock, &td);
     } else if (random <= 4.0/9.0) {
-      current_block = Block(BlockType::SBlock, &td, true);
+      current_block = Block(BlockType::SBlock, &td);
     } else if (random <= 5.0/9.0) {
-      current_block = Block(BlockType::LBlock, &td, true);
+      current_block = Block(BlockType::LBlock, &td);
     } else if (random <= 6.0/9.0) {
-      current_block = Block(BlockType::JBlock, &td, true);
+      current_block = Block(BlockType::JBlock, &td);
     } else if (random <= 7.0/9.0) {
-      current_block = Block(BlockType::IBlock, &td, true);
+      current_block = Block(BlockType::IBlock, &td);
     } else if (random <= 8.0/9.0) {
-      current_block = Block(BlockType::OBlock, &td, true);
+      current_block = Block(BlockType::OBlock, &td);
     } else {
-      current_block = Block(BlockType::TBlock, &td, true);
+      current_block = Block(BlockType::TBlock, &td);
     }
   }
 }

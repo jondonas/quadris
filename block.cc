@@ -6,8 +6,7 @@
 #include <algorithm>
 using namespace std;
 
-Block::Block(BlockType type, TextDisplay *td, bool heavy): type{type}, 
-td{td}, heavy(heavy) {
+Block::Block(BlockType type, TextDisplay *td): type{type}, td{td} {
   if (type == BlockType::TBlock) {
     init({{0,0},{1,0},{2,0},{1,1}});
   } else if (type == BlockType::IBlock) {

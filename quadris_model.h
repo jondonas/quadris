@@ -9,14 +9,14 @@
 class QuadrisModel {
 public:
   QuadrisModel();
-  void down();
-  void right();
-  void left();
-  void drop();
-  void clockwise();
-  void cclockwise();
-  void levelUp();
-  void levelDown();
+  void down(int m);
+  void right(int m);
+  void left(int m);
+  void drop(int m);
+  void clockwise(int m);
+  void cclockwise(int m);
+  void levelUp(int m);
+  void levelDown(int m);
   bool isOver();
 
 private:
