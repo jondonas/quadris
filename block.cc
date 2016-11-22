@@ -6,26 +6,26 @@
 #include <algorithm>
 using namespace std;
 
-Block::Block(BlockType type, TextDisplay *td, bool heavy): td{td}, heavy(heavy) {
+Block::Block(BlockType type, TextDisplay *td, bool heavy): type{type}, 
+td{td}, heavy(heavy) {
   if (type == BlockType::TBlock) {
-    init(type, {{0,0},{1,0},{2,0},{1,1}});
-    cout << "would have made an TBlock" << endl;
+    init({{0,0},{1,0},{2,0},{1,1}});
   } else if (type == BlockType::IBlock) {
-    cout << "would have made an IBlock" << endl;
+    init({{0,0},{1,0},{2,0},{3,0}});
   } else if (type == BlockType::JBlock) {
-    cout << "would have made an JBlock" << endl;
+    init({{0,0},{0,1},{1,1},{2,1}});
   } else if (type == BlockType::LBlock) {
-    cout << "would have made an LBlock" << endl;
+    init({{0,1},{1,1},{2,1},{0,2}});
   } else if (type == BlockType::OBlock) {
-    cout << "would have made an OBlock" << endl;
+    init({{0,0},{0,1},{1,0},{1,1}});
   } else if (type == BlockType::SBlock) {
-    cout << "would have made an SBlock" << endl;
+    init({{0,1},{1,1},{1,0},{2,0}});
   } else if (type == BlockType::ZBlock) {
-    cout << "would have made an ZBlock" << endl;
+    init({{0,0},{1,0},{1,1},{2,1}});
   }
 }
 
-void Block::init(BlockType type, vector<vector<int>> coords) {
+void Block::init(vector<vector<int>> coords) {
   for (auto coord: coords) {
     Cell cell = Cell(coord[0], coord[1], type);
     cell.attach(td);
