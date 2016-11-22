@@ -14,7 +14,6 @@ void Subject::notifyObservers(bool clear) {
       (*it)->notify({info.x, info.y, BlockType::Empty});
     }
     else
-      std::cout << "else" << std::endl;
       (*it)->notify(getInfo());
   }
 }

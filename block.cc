@@ -7,7 +7,7 @@ using namespace std;
 
 Block::Block(BlockType type, TextDisplay *td): td{td} {
   if (type == BlockType::TBlock) {
-    init(cells, type, td, {{0,0},{1,0},{2,0},{1,1}});
+    init(type, {{0,0},{1,0},{2,0},{1,1}});
   } else if (type == BlockType::IBlock) {
 
   } else if (type == BlockType::JBlock) {
@@ -23,12 +23,11 @@ Block::Block(BlockType type, TextDisplay *td): td{td} {
   }
 }
 
-void Block::init(vector<Cell> &cells, BlockType type, TextDisplay *td,
-vector<vector<int>> coords) {
+void Block::init(BlockType type, vector<vector<int>> coords) {
   for (auto coord: coords) {
     Cell cell = Cell(coord[0], coord[1], type);
     cell.attach(td);
-    cell.notifyObservers(false);
+    //cell.notifyObservers(false);
     cells.push_back(cell);
   }
 }
@@ -38,15 +37,15 @@ vector<Cell> &Block::positions() {
 }
 
 void Block::down() {
-  shift(cells, 0, 1);
+  shift(0, 1);
 }
 
 void Block::left() {
-  shift(cells, -1, 0);
+  shift(-1, 0);
 }
 
 void Block::right() {
-  shift(cells, 1, 0);
+  shift(1, 0);
 }
 
 void Block::clockwise() {
@@ -55,21 +54,16 @@ void Block::clockwise() {
 void Block::cclockwise() {
 }
 
-void Block::clear(vector<Cell> &cells) {
+void Block::clear() {
   for (auto &cell: cells)
     cell.notifyObservers(true);
 }
 
-void Block::draw(vector<Cell> &cells) {
-  for (auto &cell: cells)
-    cell.notifyObservers(false);
-}
-
-void Block::shift(vector<Cell> &cells, int rightBy, int downBy) {
-  clear(cells);
+void Block::shift(int rightBy, int downBy) {
+  clear();
   for (auto &cell: cells) {
     Info info = cell.getInfo();
     cell.setCoords(info.x + rightBy, info.y + downBy);
+    cell.notifyObservers(false);
   }
-  draw(cells);
 }
