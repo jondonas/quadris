@@ -2,6 +2,7 @@
 #define _QUADRIS_MODEL_H_
 #include <string>
 #include <iostream>
+#include <fstream>
 #include "block.h"
 #include "textdisplay.h"
 
@@ -27,6 +28,7 @@ private:
   int seed;
   std::string sequence_file;
   Block current_block;
+  std::ifstream file_in;
   void nextBlock();
   TextDisplay td;
 
