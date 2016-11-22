@@ -23,6 +23,7 @@ private:
   void clear();
   void shift(int, int);
   bool heavy;
+  vector<int> maxMin() const;
 };
 
 #endif

@@ -12,8 +12,9 @@ private:
   int argc;
   char **argv;
   int level;
+  bool cmdMatch(std::string, int, std::string);
+  bool cmdIssued;
+  bool heavy;
 };
-
-bool cmdMatch(std::string, int, std::string);
 
 #endif
