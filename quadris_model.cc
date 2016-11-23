@@ -118,9 +118,9 @@ bool QuadrisModel::canMove(int x, int y) {
   //check that the current spot is not taken up by the currently occupied positions
   for(auto position : positions) {
     for(auto updated_position : current_positions) {
-      cout << "(" << updated_position.x << ", " << updated_position.y << ")" << endl;
-      cout << "(" << position.x << "," << position.y << ")" << endl;
-      cout << (updated_position.x == position.x && updated_position.y == position.x) << endl;
+      //cout << "(" << updated_position.x << ", " << updated_position.y << ")" << endl;
+      //cout << "(" << position.x << "," << position.y << ")" << endl;
+      //cout << (updated_position.x == position.x && updated_position.y == position.x) << endl;
       if (updated_position.x == position.x && updated_position.y == position.y) {
         return false;
       } 

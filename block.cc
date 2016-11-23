@@ -31,6 +31,8 @@ void Block::init(vector<vector<int>> coords) {
     // this should draw the block on creation but I get a segfault and
     // can't find the reason yet!
     //cell.notifyObservers(false);
+    // temp fix until I can figure out segfault:
+    td->notify({coord[0], coord[1], type});
     cells.push_back(cell);
   }
 }
