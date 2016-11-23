@@ -18,13 +18,19 @@ current_block{Block(BlockType::Empty, &td)} {
 }
 
 void QuadrisModel::down(int m) {
-  for (int i = 0; i < m; ++i)
-    current_block.down();
+  for (int i = 0; i < m; ++i){
+    if(canDown()) {
+      current_block.down();
+    }
+  }
 }
 
 void QuadrisModel::right(int m) {
-  for (int i = 0; i < m; ++i)
-    current_block.right();
+  for (int i = 0; i < m; ++i){
+    if (canRight()) {
+      current_block.right();
+    }
+  }
   // takes care of heaviness - all we need
   if (level >= 3)
     down(1);
@@ -32,15 +38,21 @@ void QuadrisModel::right(int m) {
 
 void QuadrisModel::left(int m) {
   for (int i = 0; i < m; ++i)
-    current_block.left();
+    if (canLeft()) {
+      current_block.left();
+    }
   if (level >= 3)
     down(1);
 }
 
 void QuadrisModel::drop(int m) {
-  //for (int i = 0; i < m; ++i)
-    //current_block.drop();
-
+  for (int i = 0; i < m; ++i) {
+    while(canDown()) {
+      current_block.down();
+    }
+    blocks.push_back(current_block);
+    nextBlock();
+  }
 }
 
 void QuadrisModel::clockwise(int m) {
@@ -79,7 +91,46 @@ void QuadrisModel::clearRow() {
 
 }
 
+bool QuadrisModel::canDown() {
+  return canMove(0, 1);
+}
+
+bool QuadrisModel::canLeft() {
+  return canMove(-1, 0);
+}
+
+bool QuadrisModel::canRight() {
+  return canMove(1, 0);
+}
+
+bool QuadrisModel::canMove(int x, int y) {
+  vector<Info> current_positions;
+  for (auto cell : current_block.positions()) {
+    Info info = cell.getInfo();
+    info.x += x;
+    info.y += y;
+    // check that the new position is within the grid
+    if (info.x < 0 || info.x >= 11 || info.y < -3 || info.y >= 15) {
+      return false;
+    }
+    current_positions.push_back(info);
+  }
+  //check that the current spot is not taken up by the currently occupied positions
+  for(auto position : positions) {
+    for(auto updated_position : current_positions) {
+      cout << "(" << updated_position.x << ", " << updated_position.y << ")" << endl;
+      cout << "(" << position.x << "," << position.y << ")" << endl;
+      cout << (updated_position.x == position.x && updated_position.y == position.x) << endl;
+      if (updated_position.x == position.x && updated_position.y == position.y) {
+        return false;
+      } 
+    }
+  }
+  return true;
+}
+
 void QuadrisModel::nextBlock() {
+  updatePositions();
   // distrubtion where all reals between 0 and 1 have equal probability
   uniform_real_distribution<double> distribution(0.0, 1.0);
   // create a seed based on current time so that we don't always have the same blocks
@@ -151,6 +202,15 @@ void QuadrisModel::nextBlock() {
       current_block = Block(BlockType::OBlock, &td);
     } else {
       current_block = Block(BlockType::TBlock, &td);
+    }
+  }
+}
+
+void QuadrisModel::updatePositions() {
+  positions.clear();
+  for(auto block : blocks) {
+    for(auto position : block.positions()) {
+      positions.push_back(position.getInfo());
     }
   }
 }

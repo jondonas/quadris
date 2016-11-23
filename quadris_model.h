@@ -4,6 +4,7 @@
 #include <iostream>
 #include <fstream>
 #include "block.h"
+#include "info.h"
 #include "textdisplay.h"
 
 class QuadrisModel {
@@ -22,6 +23,7 @@ public:
 private:
   void clearRow();
   std::vector<Block> blocks;
+  std::vector<Info> positions;
   int level;
   static int high_score;
   int score;
@@ -30,6 +32,11 @@ private:
   Block current_block;
   std::ifstream file_in;
   void nextBlock();
+  bool canDown();
+  bool canRight();
+  bool canLeft();
+  bool canMove(int, int);
+  void updatePositions();
   TextDisplay td;
 
   friend std::ostream &operator<<(std::ostream &out, const QuadrisModel &model);
