@@ -21,7 +21,7 @@ current_block{Block(BlockType::Empty, &td)}, next_block{Block(BlockType::Empty, 
 }
 
 void QuadrisModel::down(int m) {
-  for (int i = 0; i < m; ++i){
+  for (int i = 0; i < m; ++i) {
     if(canDown()) {
       current_block.down();
     }
@@ -29,7 +29,7 @@ void QuadrisModel::down(int m) {
 }
 
 void QuadrisModel::right(int m) {
-  for (int i = 0; i < m; ++i){
+  for (int i = 0; i < m; ++i) {
     if (canRight()) {
       current_block.right();
     }
@@ -40,10 +40,11 @@ void QuadrisModel::right(int m) {
 }
 
 void QuadrisModel::left(int m) {
-  for (int i = 0; i < m; ++i)
+  for (int i = 0; i < m; ++i) {
     if (canLeft()) {
       current_block.left();
     }
+  }
   if (level >= 3)
     down(1);
 }
@@ -59,15 +60,21 @@ void QuadrisModel::drop(int m) {
 }
 
 void QuadrisModel::clockwise(int m) {
-  for (int i = 0; i < m; ++i)
-    current_block.clockwise();
+  for (int i = 0; i < m; ++i) {
+    if (canClock()) {
+      current_block.clockwise();
+    }
+  }
   if (level >= 3)
     down(1);
 }
 
 void QuadrisModel::cclockwise(int m) {
-  for (int i = 0; i < m; ++i)
-    current_block.cclockwise();
+  for (int i = 0; i < m; ++i) {
+    if (canCclock()) {
+      current_block.cclockwise();
+    }
+  }
   if (level >= 3)
     down(1);
 }
@@ -106,6 +113,45 @@ bool QuadrisModel::canRight() {
   return canMove(1, 0);
 }
 
+bool QuadrisModel::canClock() {
+  vector<int> vals = current_block.maxMin();
+  for (auto cell: current_block.positions()) {
+    Info info = cell.getInfo();
+    int x = info.x - (info.x - vals[3]) + (vals[2] - info.y);
+    int y = info.y - (vals[1] - info.x) + (vals[2] - info.y);
+    if (!isOpen(x, y)) {
+      return false;
+    }
+  }
+  return true;
+}
+
+bool QuadrisModel::canCclock() {
+  vector<int> vals = current_block.maxMin();
+  for (auto cell: current_block.positions()) {
+    Info info = cell.getInfo();
+    int x = info.x - (info.x - vals[3]) + (info.y - vals[0]);
+    int y = info.y - (info.x - vals[3]) + (vals[2] - info.y);
+    if (!isOpen(x, y)) {
+      return false;
+    }
+  }
+  return true;
+}
+
+// checks absolute position and not relative like canMove.
+bool QuadrisModel::isOpen(int x, int y) {
+  if (x < 0 || x >= 11 || y < -3 || y >= 15) {
+      return false;
+  }
+  for (auto position: positions) {
+    if (x == position.x && y == position.y) {
+        return false;
+    }
+  }
+  return true;
+}
+
 bool QuadrisModel::canMove(int x, int y) {
   vector<Info> current_positions;
   for (auto cell : current_block.positions()) {
@@ -121,9 +167,6 @@ bool QuadrisModel::canMove(int x, int y) {
   //check that the current spot is not taken up by the currently occupied positions
   for(auto position : positions) {
     for(auto updated_position : current_positions) {
-      //cout << "(" << updated_position.x << ", " << updated_position.y << ")" << endl;
-      //cout << "(" << position.x << "," << position.y << ")" << endl;
-      //cout << (updated_position.x == position.x && updated_position.y == position.x) << endl;
       if (updated_position.x == position.x && updated_position.y == position.y) {
         return false;
       } 

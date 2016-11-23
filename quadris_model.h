@@ -36,6 +36,9 @@ private:
   bool canDown();
   bool canRight();
   bool canLeft();
+  bool canClock();
+  bool canCclock();
+  bool isOpen(int, int);
   bool canMove(int, int);
   void updatePositions();
   TextDisplay td;
