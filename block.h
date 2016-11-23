@@ -9,7 +9,7 @@ using namespace std;
 class Block {
 public:
   Block(BlockType type, TextDisplay *);
-  std::vector<Cell> &positions();
+  std::vector<Cell> positions();
   void down();
   void left();
   void right();

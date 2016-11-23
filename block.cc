@@ -35,7 +35,7 @@ void Block::init(vector<vector<int>> coords) {
   }
 }
 
-vector<Cell> &Block::positions() {
+vector<Cell> Block::positions() {
   return cells;
 }
 
