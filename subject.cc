@@ -1,7 +1,6 @@
 #include "subject.h"
 #include "observer.h"
 #include "block_type.h"
-#include <iostream>
 
 void Subject::attach(Observer *o) { 
   observers.push_back(o);    

@@ -14,7 +14,7 @@ Block::Block(BlockType type, TextDisplay *td): type{type}, td{td} {
   } else if (type == BlockType::JBlock) {
     init({{0,0},{0,1},{1,1},{2,1}});
   } else if (type == BlockType::LBlock) {
-    init({{0,1},{1,1},{2,1},{0,2}});
+    init({{2,0},{0,1},{1,1},{2,1}});
   } else if (type == BlockType::OBlock) {
     init({{0,0},{0,1},{1,0},{1,1}});
   } else if (type == BlockType::SBlock) {
@@ -28,11 +28,6 @@ void Block::init(vector<vector<int>> coords) {
   for (auto coord: coords) {
     Cell cell = Cell(coord[0], coord[1], type);
     cell.attach(td);
-    // this should draw the block on creation but I get a segfault and
-    // can't find the reason yet!
-    //cell.notifyObservers(false);
-    // temp fix until I can figure out segfault:
-    td->notify({coord[0], coord[1], type});
     cells.push_back(cell);
   }
 }
@@ -91,7 +86,6 @@ void Block::shift(int rightBy, int downBy) {
 
 // Returns the smallest y, largest x, largest y, smallest x of cells in the block
 // needed for rotation calculations.
-// Will probably make this public later so the model can use this for bounds checking
 vector<int> Block::maxMin() const {
   vector<int> x_vals, y_vals;
   for (auto cell: cells) {
@@ -102,4 +96,9 @@ vector<int> Block::maxMin() const {
   auto y_result = minmax_element(y_vals.begin(), y_vals.end());
 
   return {*y_result.first, *x_result.second, *y_result.second, *x_result.first};
+}
+
+void Block::draw() const {
+  for (auto cell: cells)
+    cell.notifyObservers(false);
 }

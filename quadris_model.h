@@ -30,6 +30,7 @@ private:
   int seed;
   std::string sequence_file;
   Block current_block;
+  Block next_block;
   std::ifstream file_in;
   void nextBlock();
   bool canDown();
