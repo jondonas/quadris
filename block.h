@@ -10,7 +10,7 @@ class Block {
 public:
   Block(BlockType type, TextDisplay *);
   std::vector<Cell> positions();
-  BlockType type;
+  BlockType getType() const;
   void down();
   void left();
   void right();
@@ -20,6 +20,7 @@ public:
   vector<int> maxMin() const;
 
 private:
+  BlockType type;
   std::vector<Cell> cells;
   TextDisplay *td;
   void init(vector<vector<int>>);

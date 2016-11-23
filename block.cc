@@ -102,3 +102,7 @@ void Block::draw() const {
   for (auto cell: cells)
     cell.notifyObservers(false);
 }
+
+BlockType Block::getType() const {
+  return type;
+}

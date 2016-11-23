@@ -224,7 +224,7 @@ void QuadrisModel::updatePositions() {
 }
 
 std::ostream &operator<<(std::ostream &out, const QuadrisModel &model) {
-  cout << "\nLevel:" << setw(9) << model.level << endl;
+  cout << endl << "Level:" << setw(9) << model.level << endl;
   cout << "Score:" << setw(9) << model.score << endl;
   cout << "Hi Score:" << setw(6) << model.high_score << endl;
   cout << "-----------" << endl;
@@ -232,19 +232,19 @@ std::ostream &operator<<(std::ostream &out, const QuadrisModel &model) {
   cout << "-----------" << endl;
   cout << "Next:" << endl;
 
-  if (model.next_block.type == BlockType::ZBlock)
+  if (model.next_block.getType() == BlockType::ZBlock)
     cout << "ZZ\n ZZ" << endl;
-  else if (model.next_block.type == BlockType::SBlock)
+  else if (model.next_block.getType() == BlockType::SBlock)
     cout << " SS\nSS" << endl;
-  else if (model.next_block.type == BlockType::LBlock)
+  else if (model.next_block.getType() == BlockType::LBlock)
     cout << "  L\nLLL" << endl;
-  else if (model.next_block.type == BlockType::JBlock)
+  else if (model.next_block.getType() == BlockType::JBlock)
     cout << "J  \nJJJ" << endl;
-  else if (model.next_block.type == BlockType::IBlock)
+  else if (model.next_block.getType() == BlockType::IBlock)
     cout << "IIII" << endl;
-  else if (model.next_block.type == BlockType::OBlock)
+  else if (model.next_block.getType() == BlockType::OBlock)
     cout << "OO\nOO" << endl;
-  else if (model.next_block.type == BlockType::TBlock)
+  else if (model.next_block.getType() == BlockType::TBlock)
     cout << "TTT\n T" << endl;
 
   return out;
