@@ -141,3 +141,7 @@ bool Block::isHeavy() const {
 int Block::getLevel() const {
   return level;
 }
+
+bool Block::isEmpty() const {
+  return cells.empty();
+}

@@ -21,6 +21,7 @@ public:
   void draw() const;
   vector<int> maxMin() const;
   bool isHeavy() const;
+  bool isEmpty() const;
   int getLevel() const;
 
 private:
