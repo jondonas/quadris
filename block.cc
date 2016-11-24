@@ -6,7 +6,7 @@
 #include <algorithm>
 using namespace std;
 
-Block::Block(BlockType type, TextDisplay *td, bool heavy): type{type}, td{td}, heavy{heavy} {
+Block::Block(BlockType type, TextDisplay *td, int level): type{type}, td{td}, level{level} {
   if (type == BlockType::TBlock) {
     init({{0,0},{1,0},{2,0},{1,1}});
   } else if (type == BlockType::IBlock) {
@@ -135,5 +135,13 @@ void Block::draw() const {
 }
 
 bool Block::isHeavy() const {
-  return heavy;
+  return level >= 3;
+}
+
+int Block::getLevel() const {
+  return level;
+}
+
+bool Block::isEmpty() const {
+  return cells.empty();
 }

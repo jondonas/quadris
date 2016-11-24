@@ -1,5 +1,4 @@
 #include "quadris_model.h"
-#include "cell.h"
 #include <iostream>
 #include <fstream>
 #include <random>
@@ -56,6 +55,7 @@ void QuadrisModel::drop(int m) {
     }
     blocks.push_back(current_block);
     clearRows();
+    clearBlocks();
     nextBlock();
   }
 }
@@ -118,6 +118,19 @@ void QuadrisModel::clearRows() {
   updatePositions();
   rows_cleared += level;
   updateScore(rows_cleared * rows_cleared);
+}
+
+void QuadrisModel::clearBlocks() {
+  for(int i = 0; i < blocks.size(); i++) {
+    if (blocks[i].isEmpty()) {
+      int levelScore = 1;
+      levelScore += blocks[i].getLevel();
+      levelScore *= levelScore;
+      updateScore(levelScore);
+      blocks.erase(blocks.begin() + i);
+      i--;
+    }
+  }
 }
 
 void QuadrisModel::updateScore(int update) {
@@ -211,11 +224,7 @@ void QuadrisModel::nextBlock() {
   double random = distribution(generator);
 
   // make the next block the current block
-  if (level >= 3)
-    current_block = Block(next_block, &td, true);
-  else
-    current_block = Block(next_block, &td, false);
-  
+  current_block = Block(next_block, &td, level);
   current_block.draw();
 
   if (level == 0) {
