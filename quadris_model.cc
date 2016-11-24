@@ -1,5 +1,4 @@
 #include "quadris_model.h"
-#include "cell.h"
 #include <iostream>
 #include <fstream>
 #include <random>
@@ -211,11 +210,7 @@ void QuadrisModel::nextBlock() {
   double random = distribution(generator);
 
   // make the next block the current block
-  if (level >= 3)
-    current_block = Block(next_block, &td, true);
-  else
-    current_block = Block(next_block, &td, false);
-  
+  current_block = Block(next_block, &td, true);
   current_block.draw();
 
   if (level == 0) {
