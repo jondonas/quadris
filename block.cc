@@ -70,6 +70,37 @@ void Block::cclockwise() {
   }
 }
 
+int Block::colsOccupied(int r) {
+  int total = 0;
+  for (auto &cell : cells) {
+    if (cell.getInfo().y == r) {
+      total++;
+    }
+  }
+  return total;
+}
+
+void Block::remove(int r) {
+  for (int i = 0; i < cells.size(); i++) {
+    if(cells[i].getInfo().y == r) {
+      cells[i].notifyObservers(true);
+      cells.erase(cells.begin()+i);
+      i--;
+    }
+  }
+}
+
+void Block::dropAbove(int r) {
+  for (auto &cell : cells) {
+    Info info = cell.getInfo();
+    if (info.y < r) {
+      cell.notifyObservers(true);
+      cell.setCoords(info.x, info.y + 1);
+      cell.notifyObservers(false);
+    }
+  }
+} 
+
 void Block::clear() {
   for (auto &cell: cells)
     cell.notifyObservers(true);

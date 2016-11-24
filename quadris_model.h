@@ -21,7 +21,7 @@ public:
   bool isOver();
 
 private:
-  void clearRow();
+  void clearRows();
   std::vector<Block> blocks;
   std::vector<Info> positions;
   int level;

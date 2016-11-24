@@ -16,6 +16,9 @@ public:
   void right();
   void clockwise();
   void cclockwise();
+  int colsOccupied(int);
+  void remove(int);
+  void dropAbove(int); 
   void draw() const;
   vector<int> maxMin() const;
 
