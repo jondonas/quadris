@@ -41,6 +41,7 @@ private:
   bool isOpen(int, int);
   bool canMove(int, int);
   void updatePositions();
+  void updateScore(int);
   TextDisplay td;
 
   friend std::ostream &operator<<(std::ostream &out, const QuadrisModel &model);
