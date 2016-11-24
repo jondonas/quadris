@@ -1,4 +1,5 @@
 #include "quadris_model.h"
+#include "cell.h"
 #include <iostream>
 #include <fstream>
 #include <random>
@@ -98,6 +99,7 @@ bool QuadrisModel::isOver() {
 }
 
 void QuadrisModel::clearRows() {
+  int rows_cleared = 0;
   for(int r = 14; r >= 0; r--) {
     int cols_occupied = 0;
     for(auto &block : blocks) {
@@ -108,9 +110,20 @@ void QuadrisModel::clearRows() {
         block.remove(r);
         block.dropAbove(r);
       }
+      rows_cleared++;
       //so we recheck the current row
       r++;
     }
+  }
+  updatePositions();
+  rows_cleared += level;
+  updateScore(rows_cleared * rows_cleared);
+}
+
+void QuadrisModel::updateScore(int update) {
+  score += update;
+  if (score > high_score) {
+    high_score = score;
   }
 }
 

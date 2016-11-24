@@ -96,9 +96,9 @@ void Block::dropAbove(int r) {
     if (info.y < r) {
       cell.notifyObservers(true);
       cell.setCoords(info.x, info.y + 1);
-      cell.notifyObservers(false);
     }
   }
+  draw();
 } 
 
 void Block::clear() {
