@@ -9,7 +9,7 @@ using namespace std;
 int QuadrisModel::high_score = 0;
 
 QuadrisModel::QuadrisModel(): td{TextDisplay()}, 
-current_block{Block(BlockType::Empty, &td)}, next_block{Block(BlockType::Empty, &td)} {
+current_block{Block(BlockType::Empty, &td, false)}, next_block{BlockType::Empty} {
   score = 0;
   seed = 0;
   level = 0;
@@ -34,8 +34,7 @@ void QuadrisModel::right(int m) {
       current_block.right();
     }
   }
-  // takes care of heaviness - all we need
-  if (level >= 3)
+  if (current_block.isHeavy())
     down(1);
 }
 
@@ -45,7 +44,7 @@ void QuadrisModel::left(int m) {
       current_block.left();
     }
   }
-  if (level >= 3)
+  if (current_block.isHeavy())
     down(1);
 }
 
@@ -66,7 +65,7 @@ void QuadrisModel::clockwise(int m) {
       current_block.clockwise();
     }
   }
-  if (level >= 3)
+  if (current_block.isHeavy())
     down(1);
 }
 
@@ -76,7 +75,7 @@ void QuadrisModel::cclockwise(int m) {
       current_block.cclockwise();
     }
   }
-  if (level >= 3)
+  if (current_block.isHeavy())
     down(1);
 }
 
@@ -199,74 +198,78 @@ void QuadrisModel::nextBlock() {
   double random = distribution(generator);
 
   // make the next block the current block
-  current_block = next_block;
+  if (level >= 3)
+    current_block = Block(next_block, &td, true);
+  else
+    current_block = Block(next_block, &td, false);
+  
   current_block.draw();
 
   if (level == 0) {
     string type;
     file_in >> type;
     if (type == "Z") {
-      next_block = Block(BlockType::ZBlock, &td);
+      next_block = BlockType::ZBlock;
     } else if (type == "S") {
-      next_block = Block(BlockType::SBlock, &td);
+      next_block = BlockType::SBlock;
     } else if (type == "L") {
-      next_block = Block(BlockType::LBlock, &td);
+      next_block = BlockType::LBlock;
     } else if (type == "J") {
-      next_block = Block(BlockType::JBlock, &td);
+      next_block = BlockType::JBlock;
     } else if (type == "I") {
-      next_block = Block(BlockType::IBlock, &td);
+      next_block = BlockType::IBlock;
     } else if (type == "O") {
-      next_block = Block(BlockType::OBlock, &td);
+      next_block = BlockType::OBlock;
     } else if (type == "T") {
-      next_block = Block(BlockType::TBlock, &td);
+      next_block = BlockType::TBlock;
     } 
   } else if (level == 1) {
     if (random <= 1.0/12.0) {
-      next_block = Block(BlockType::ZBlock, &td);
+      next_block = BlockType::ZBlock;
     } else if (random <= 1.0/6.0) {
-      next_block = Block(BlockType::SBlock, &td);
+      next_block = BlockType::SBlock;
     } else if (random <= 2.0/6.0) {
-      next_block = Block(BlockType::LBlock, &td);
+      next_block = BlockType::LBlock;
     } else if (random <= 3.0/6.0) {
-      next_block = Block(BlockType::JBlock, &td);
+      next_block = BlockType::JBlock;
     } else if (random <= 4.0/6.0) {
-      next_block = Block(BlockType::IBlock, &td);
+      next_block = BlockType::IBlock;
     } else if (random <= 5.0/6.0) {
-      next_block = Block(BlockType::OBlock, &td);
+      next_block = BlockType::OBlock;
     } else {
-      next_block = Block(BlockType::TBlock, &td);
+      next_block = BlockType::TBlock;
     }
   } else if (level == 2) {
     if (random <= 1.0/7.0) {
-      next_block = Block(BlockType::ZBlock, &td);
+      next_block = BlockType::ZBlock;
     } else if (random <= 2.0/7.0) {
-      next_block = Block(BlockType::SBlock, &td);
+      next_block = BlockType::SBlock;
     } else if (random <= 3.0/7.0) {
-      next_block = Block(BlockType::LBlock, &td);
+      next_block = BlockType::LBlock;
     } else if (random <= 4.0/7.0) {
-      next_block = Block(BlockType::JBlock, &td);
+      next_block = BlockType::JBlock;
     } else if (random <= 5.0/7.0) {
-      next_block = Block(BlockType::IBlock, &td);
+      next_block = BlockType::IBlock;
     } else if (random <= 6.0/7.0) {
-      next_block = Block(BlockType::OBlock, &td);
+      next_block = BlockType::OBlock;
     } else {
-      next_block = Block(BlockType::TBlock, &td);
+      next_block = BlockType::TBlock;
     }
   } else {
     if (random <= 2.0/9.0) {
-      next_block = Block(BlockType::ZBlock, &td);
+      next_block = BlockType::ZBlock;
     } else if (random <= 4.0/9.0) {
-      next_block = Block(BlockType::SBlock, &td);
+      next_block = BlockType::SBlock;
     } else if (random <= 5.0/9.0) {
-      next_block = Block(BlockType::LBlock, &td);
+      next_block = BlockType::LBlock;
     } else if (random <= 6.0/9.0) {
-      next_block = Block(BlockType::JBlock, &td);
+      next_block = BlockType::JBlock;
     } else if (random <= 7.0/9.0) {
-      next_block = Block(BlockType::IBlock, &td);
+      next_block = BlockType::IBlock;
     } else if (random <= 8.0/9.0) {
-      next_block = Block(BlockType::OBlock, &td);
+      next_block = BlockType::OBlock;
     } else {
-      next_block = Block(BlockType::TBlock, &td);
+      next_block = BlockType::TBlock;
     }
   }
 }
@@ -284,24 +287,24 @@ std::ostream &operator<<(std::ostream &out, const QuadrisModel &model) {
   cout << endl << "Level:" << setw(9) << model.level << endl;
   cout << "Score:" << setw(9) << model.score << endl;
   cout << "Hi Score:" << setw(6) << model.high_score << endl;
-  cout << "-----------" << endl;
+  cout << "  -----------" << endl;
   cout << model.td;
-  cout << "-----------" << endl;
+  cout << "  -----------" << endl;
   cout << "Next:" << endl;
 
-  if (model.next_block.getType() == BlockType::ZBlock)
+  if (model.next_block == BlockType::ZBlock)
     cout << "ZZ\n ZZ" << endl;
-  else if (model.next_block.getType() == BlockType::SBlock)
+  else if (model.next_block == BlockType::SBlock)
     cout << " SS\nSS" << endl;
-  else if (model.next_block.getType() == BlockType::LBlock)
+  else if (model.next_block == BlockType::LBlock)
     cout << "  L\nLLL" << endl;
-  else if (model.next_block.getType() == BlockType::JBlock)
+  else if (model.next_block == BlockType::JBlock)
     cout << "J  \nJJJ" << endl;
-  else if (model.next_block.getType() == BlockType::IBlock)
+  else if (model.next_block == BlockType::IBlock)
     cout << "IIII" << endl;
-  else if (model.next_block.getType() == BlockType::OBlock)
+  else if (model.next_block == BlockType::OBlock)
     cout << "OO\nOO" << endl;
-  else if (model.next_block.getType() == BlockType::TBlock)
+  else if (model.next_block == BlockType::TBlock)
     cout << "TTT\n T" << endl;
 
   return out;

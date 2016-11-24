@@ -8,9 +8,8 @@ using namespace std;
 
 class Block {
 public:
-  Block(BlockType type, TextDisplay *);
+  Block(BlockType type, TextDisplay *, bool);
   std::vector<Cell> positions();
-  BlockType getType() const;
   void down();
   void left();
   void right();
@@ -21,9 +20,11 @@ public:
   void dropAbove(int); 
   void draw() const;
   vector<int> maxMin() const;
+  bool isHeavy() const;
 
 private:
   BlockType type;
+  bool heavy;
   std::vector<Cell> cells;
   TextDisplay *td;
   void init(vector<vector<int>>);

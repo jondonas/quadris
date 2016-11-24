@@ -39,9 +39,10 @@ TextDisplay::~TextDisplay() {}
 
 ostream &operator<<(ostream &out, const TextDisplay &td) {
   for (int i = 0; i < 15; ++i) {
+    out << " |";
     for (int ii = 0; ii < 11; ++ii)
       out << td.theDisplay[i][ii];
-    out << endl;
+    out << "|" << endl;
   }
   return out;
 }
