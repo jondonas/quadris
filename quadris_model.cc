@@ -54,6 +54,7 @@ void QuadrisModel::drop(int m) {
       current_block.down();
     }
     blocks.push_back(current_block);
+    clearRows();
     nextBlock();
   }
 }
@@ -90,8 +91,21 @@ bool QuadrisModel::isOver() {
   return false;
 }
 
-void QuadrisModel::clearRow() {
-
+void QuadrisModel::clearRows() {
+  for(int r = 14; r >= 0; r--) {
+    int cols_occupied = 0;
+    for(auto &block : blocks) {
+      cols_occupied += block.colsOccupied(r);
+    }
+    if (cols_occupied == 11) {
+      for(auto &block : blocks) {
+        block.remove(r);
+        block.dropAbove(r);
+      }
+      //so we recheck the current row
+      r++;
+    }
+  }
 }
 
 bool QuadrisModel::canDown() {
