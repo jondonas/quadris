@@ -8,3 +8,6 @@ ${EXEC}: ${OBJECTS}
 	${CXX} ${CXXFLAGS} ${OBJECTS} -o ${EXEC}
 
 -include ${DEPENDS}
+
+clean:
+	-rm *.o

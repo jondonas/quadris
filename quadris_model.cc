@@ -8,16 +8,39 @@ using namespace std;
 
 int QuadrisModel::high_score = 0;
 
-QuadrisModel::QuadrisModel(): td{TextDisplay()}, 
-current_block{Block(BlockType::Empty, &td, false)}, next_block{BlockType::Empty} {
+QuadrisModel::QuadrisModel(bool text, unsigned seed, string script_file, int start_level):
+td{make_shared<TextDisplay>()}, current_block{Block(BlockType::Empty, td, false)}, 
+next_block{BlockType::Empty}, block_random{true}, level{0}, seed{seed} {
+  if (start_level >= 0 && start_level <= 4)
+    level = start_level;
+  if (seed)
+    seed_set = true;
   score = 0;
-  seed = 0;
-  level = 0;
-  sequence_file = "sequence.txt";
-  file_in = ifstream(sequence_file);
+  // for now, exit if seq file can't be loaded at start. todo: let user play without
+  // loading seq file.
+  if (!setSeqFile(script_file))
+    exit(1);
+
+  // todo: implement -text option when graphics are ready
+  
   // load two random blocks: one for current and one for next block
   nextBlock();
   nextBlock();
+}
+
+bool QuadrisModel::setSeqFile(string seqFile) {
+  ifstream temp(seqFile);
+  if (!temp.is_open()) {
+    cout << "Could not open sequence file." << endl;
+    return false;
+  }
+  file_in = move(temp);
+  return true;
+}
+
+void QuadrisModel::setRandom(bool rndm) {
+  if (level == 3 || level == 4)
+    block_random = rndm;
 }
 
 void QuadrisModel::down(int m) {
@@ -116,8 +139,10 @@ void QuadrisModel::clearRows() {
     }
   }
   updatePositions();
-  rows_cleared += level;
-  updateScore(rows_cleared * rows_cleared);
+  if (rows_cleared > 0) {
+    rows_cleared += level;
+    updateScore(rows_cleared * rows_cleared);
+  }
 }
 
 void QuadrisModel::clearBlocks() {
@@ -219,15 +244,17 @@ void QuadrisModel::nextBlock() {
   // distrubtion where all reals between 0 and 1 have equal probability
   uniform_real_distribution<double> distribution(0.0, 1.0);
   // create a seed based on current time so that we don't always have the same blocks
-  unsigned seed = chrono::system_clock::now().time_since_epoch().count();
+  if (!seed_set)
+    seed = chrono::system_clock::now().time_since_epoch().count();
   default_random_engine generator(seed);
   double random = distribution(generator);
 
+
   // make the next block the current block
-  current_block = Block(next_block, &td, level);
+  current_block = Block(next_block, td, level);
   current_block.draw();
 
-  if (level == 0) {
+  if (level == 0 || !block_random) {
     string type;
     file_in >> type;
     if (type == "Z") {
@@ -310,7 +337,7 @@ std::ostream &operator<<(std::ostream &out, const QuadrisModel &model) {
   cout << "Score:" << setw(9) << model.score << endl;
   cout << "Hi Score:" << setw(6) << model.high_score << endl;
   cout << "  -----------" << endl;
-  cout << model.td;
+  cout << *(model.td);
   cout << "  -----------" << endl;
   cout << "Next:" << endl;
 

@@ -6,7 +6,7 @@
 #include <algorithm>
 using namespace std;
 
-Block::Block(BlockType type, TextDisplay *td, int level): type{type}, td{td}, level{level} {
+Block::Block(BlockType type, shared_ptr<TextDisplay> td, int level): type{type}, td{td}, level{level} {
   if (type == BlockType::TBlock) {
     init({{0,0},{1,0},{2,0},{1,1}});
   } else if (type == BlockType::IBlock) {
