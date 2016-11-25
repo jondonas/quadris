@@ -3,13 +3,14 @@
 #include <string>
 #include <iostream>
 #include <fstream>
+#include <memory>
 #include "block.h"
 #include "info.h"
 #include "textdisplay.h"
 
 class QuadrisModel {
 public:
-  QuadrisModel();
+  QuadrisModel(bool, unsigned, std::string, int);
   void down(int m);
   void right(int m);
   void left(int m);
@@ -19,6 +20,8 @@ public:
   void levelUp(int m);
   void levelDown(int m);
   bool isOver();
+  bool setSeqFile(std::string);
+  void setRandom(bool);
 
 private:
   void clearRows();
@@ -27,8 +30,9 @@ private:
   int level;
   static int high_score;
   int score;
-  int seed;
-  std::string sequence_file;
+  unsigned seed;
+  bool block_random;
+  bool seed_set;
   Block current_block;
   BlockType next_block;
   std::ifstream file_in;
@@ -43,7 +47,7 @@ private:
   void updatePositions();
   void updateScore(int);
   void clearBlocks();
-  TextDisplay td;
+  std::shared_ptr<TextDisplay> td;
 
   friend std::ostream &operator<<(std::ostream &out, const QuadrisModel &model);
 };
