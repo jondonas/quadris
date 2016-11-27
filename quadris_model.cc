@@ -10,7 +10,7 @@ int QuadrisModel::high_score = 0;
 
 QuadrisModel::QuadrisModel(bool text, unsigned seed, string script_file, int start_level):
 td{make_shared<TextDisplay>()}, current_block{Block(BlockType::Empty, td, false)}, 
-next_block{BlockType::Empty}, block_random{true}, level{0}, seed{seed} {
+next_block{BlockType::Empty}, block_random{true}, level{0}, seed{seed}, lost {false} {
   if (start_level >= 0 && start_level <= 4)
     level = start_level;
   if (seed)
@@ -22,7 +22,7 @@ next_block{BlockType::Empty}, block_random{true}, level{0}, seed{seed} {
     exit(1);
 
   // todo: implement -text option when graphics are ready
-  
+
   // load two random blocks: one for current and one for next block
   nextBlock();
   nextBlock();
@@ -118,7 +118,7 @@ void QuadrisModel::levelDown(int m) {
 }
 
 bool QuadrisModel::isOver() {
-  return false;
+  return lost;
 }
 
 void QuadrisModel::clearRows() {
@@ -252,6 +252,11 @@ void QuadrisModel::nextBlock() {
 
   // make the next block the current block
   current_block = Block(next_block, td, level);
+  // if the current space is occupied the game is over
+  if (!canMove(0, 0)) {
+    lost = true;
+    return;
+  }
   current_block.draw();
 
   if (level == 0 || !block_random) {
