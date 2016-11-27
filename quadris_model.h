@@ -36,6 +36,7 @@ private:
   Block current_block;
   BlockType next_block;
   std::ifstream file_in;
+  bool lost;
   void nextBlock();
   bool canDown();
   bool canRight();
