@@ -41,7 +41,7 @@ void GraphicsDisplay::notify(Info info) {
 
 void GraphicsDisplay::drawCell(int x, int y, int colour) {
   int y_margin = 25;
-  int x_margin = 150;
+  int x_margin = 145;
 
   xw.fillRectangle(x_margin + 30*x, y_margin + 30*y, 29, 29, colour);
 }

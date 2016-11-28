@@ -16,6 +16,7 @@ private:
   int start_level;
   bool cmdMatch(std::string, int, std::string);
   void init();
+  void usage();
 };
 
 #endif
