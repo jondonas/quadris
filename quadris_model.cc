@@ -4,13 +4,14 @@
 #include <random>
 #include <chrono>
 #include <iomanip>
+//#include <vector>
 using namespace std;
 
 int QuadrisModel::high_score = 0;
 
 QuadrisModel::QuadrisModel(bool text, unsigned seed, string script_file, int start_level):
-td{make_shared<TextDisplay>()}, current_block{Block(BlockType::Empty, td, false)}, 
-next_block{BlockType::Empty}, block_random{true}, level{0}, seed{seed}, lost {false} {
+td{make_shared<TextDisplay>()}, gd{nullptr}, current_block{Block(BlockType::Empty, td, gd, false)}, next_block{BlockType::Empty}, block_random{true}, 
+level{0}, seed{seed}, lost{false} {
   if (start_level >= 0 && start_level <= 4)
     level = start_level;
   if (seed)
@@ -21,11 +22,15 @@ next_block{BlockType::Empty}, block_random{true}, level{0}, seed{seed}, lost {fa
   if (!setSeqFile(script_file))
     exit(1);
 
-  // todo: implement -text option when graphics are ready
+  if (!text)
+    gd = make_shared<GraphicsDisplay>();
+  
+// load two random blocks: one for current and one for next block
+  nextBlock();
+  nextBlock();
 
-  // load two random blocks: one for current and one for next block
-  nextBlock();
-  nextBlock();
+  if (gd)
+    drawLegend();
 }
 
 bool QuadrisModel::setSeqFile(string seqFile) {
@@ -44,63 +49,79 @@ void QuadrisModel::setRandom(bool rndm) {
 }
 
 void QuadrisModel::down(int m) {
+  // model should take care of drawing. This is so the graphics display doesn't
+  // draw every single movement when multiplicity is used or you drop a block (so slow!)
+  current_block.clear();
   for (int i = 0; i < m; ++i) {
     if(canDown()) {
       current_block.down();
     }
   }
+  current_block.draw();
 }
 
 void QuadrisModel::right(int m) {
+  current_block.clear();
   for (int i = 0; i < m; ++i) {
     if (canRight()) {
       current_block.right();
     }
   }
-  if (current_block.isHeavy())
-    down(1);
+  if (current_block.isHeavy() && canDown())
+    current_block.down();
+  current_block.draw();
 }
 
 void QuadrisModel::left(int m) {
+  current_block.clear();
   for (int i = 0; i < m; ++i) {
     if (canLeft()) {
       current_block.left();
     }
   }
-  if (current_block.isHeavy())
-    down(1);
+  if (current_block.isHeavy() && canDown())
+    current_block.down();
+  current_block.draw();
 }
 
 void QuadrisModel::drop(int m) {
   for (int i = 0; i < m; ++i) {
+    current_block.clear();
     while(canDown()) {
       current_block.down();
     }
+    current_block.draw();
     blocks.push_back(current_block);
     clearRows();
     clearBlocks();
     nextBlock();
+    if (gd)
+      drawLegend();
   }
 }
 
 void QuadrisModel::clockwise(int m) {
+  current_block.clear();
   for (int i = 0; i < m; ++i) {
     if (canClock()) {
       current_block.clockwise();
     }
   }
-  if (current_block.isHeavy())
-    down(1);
+  if (current_block.isHeavy() && canDown())
+    current_block.down();
+  current_block.draw();
 }
 
 void QuadrisModel::cclockwise(int m) {
+  current_block.clear();
   for (int i = 0; i < m; ++i) {
     if (canCclock()) {
       current_block.cclockwise();
     }
   }
-  if (current_block.isHeavy())
-    down(1);
+  if (current_block.isHeavy() && canDown())
+    current_block.down();
+  current_block.draw();
 }
 
 void QuadrisModel::levelUp(int m) {
@@ -108,6 +129,8 @@ void QuadrisModel::levelUp(int m) {
     if (level != 4)
       ++level;
   }
+  if (gd)
+    drawLegend();
 }
 
 void QuadrisModel::levelDown(int m) {
@@ -115,6 +138,8 @@ void QuadrisModel::levelDown(int m) {
     if (level != 0)
       --level;
   }
+  if (gd)
+    drawLegend();
 }
 
 void QuadrisModel::swapType(BlockType t) {
@@ -122,12 +147,16 @@ void QuadrisModel::swapType(BlockType t) {
   int y = current_block.getY();
   int level = current_block.getLevel();
   current_block.clear();
-  current_block = Block(t, td, level, x, y);
+  current_block = Block(t, td, gd, level, x, y);
   current_block.draw();
 }
 
 bool QuadrisModel::isOver() {
   return lost;
+}
+
+int QuadrisModel::getScore() {
+  return score;
 }
 
 void QuadrisModel::clearRows() {
@@ -260,7 +289,7 @@ void QuadrisModel::nextBlock() {
 
 
   // make the next block the current block
-  current_block = Block(next_block, td, level, 0, 0);
+  current_block = Block(next_block, td, gd, level, 0, 0);
   // if the current space is occupied the game is over
   if (!canMove(0, 0)) {
     lost = true;
@@ -344,6 +373,23 @@ void QuadrisModel::updatePositions() {
       positions.push_back(position.getInfo());
     }
   }
+}
+
+void QuadrisModel::drawLegend() {
+  if (next_block == BlockType::ZBlock)
+    gd->drawLegend(level, score, high_score, {{0,0},{1,0},{1,1},{2,1}}, Xwindow::Red);
+  else if (next_block == BlockType::SBlock)
+    gd->drawLegend(level, score, high_score, {{0,1},{1,1},{1,0},{2,0}}, Xwindow::Green);
+  else if (next_block == BlockType::LBlock)
+    gd->drawLegend(level, score, high_score, {{2,0},{0,1},{1,1},{2,1}}, Xwindow::Orange);
+  else if (next_block == BlockType::JBlock)
+    gd->drawLegend(level, score, high_score, {{0,0},{0,1},{1,1},{2,1}}, Xwindow::Blue);
+  else if (next_block == BlockType::IBlock)
+    gd->drawLegend(level, score, high_score, {{0,0},{1,0},{2,0},{3,0}}, Xwindow::Cyan);
+  else if (next_block == BlockType::OBlock)
+    gd->drawLegend(level, score, high_score, {{0,0},{0,1},{1,0},{1,1}}, Xwindow::Yellow);
+  else if (next_block == BlockType::TBlock)
+    gd->drawLegend(level, score, high_score, {{0,0},{1,0},{2,0},{1,1}}, Xwindow::Purple);
 }
 
 std::ostream &operator<<(std::ostream &out, const QuadrisModel &model) {

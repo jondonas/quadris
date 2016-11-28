@@ -7,6 +7,7 @@
 #include "block.h"
 #include "info.h"
 #include "textdisplay.h"
+#include "graphicsdisplay.h"
 
 class QuadrisModel {
 public:
@@ -23,6 +24,7 @@ public:
   bool setSeqFile(std::string);
   void setRandom(bool);
   void swapType(BlockType);
+  int getScore();
 
 private:
   void clearRows();
@@ -49,7 +51,9 @@ private:
   void updatePositions();
   void updateScore(int);
   void clearBlocks();
+  void drawLegend();
   std::shared_ptr<TextDisplay> td;
+  std::shared_ptr<GraphicsDisplay> gd;
 
   friend std::ostream &operator<<(std::ostream &out, const QuadrisModel &model);
 };

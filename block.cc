@@ -6,7 +6,7 @@
 #include <algorithm>
 using namespace std;
 
-Block::Block(BlockType type, shared_ptr<TextDisplay> td, int level, int offset_x, int offset_y): type{type}, td{td}, level{level} {
+Block::Block(BlockType type, shared_ptr<TextDisplay> td, shared_ptr<GraphicsDisplay> gd, int level, int offset_x, int offset_y): type{type}, td{td}, gd{gd}, level{level} { 
   vector<vector<int>> coords;
   if (type == BlockType::TBlock) {
     coords = {{0,0},{1,0},{2,0},{1,1}};
@@ -32,6 +32,8 @@ void Block::init(vector<vector<int>> coords, int offset_x, int offset_y) {
   for (auto coord: coords) {
     Cell cell = Cell(coord[0] + offset_x, coord[1] + offset_y, type);
     cell.attach(td);
+    if (gd)
+      cell.attach(gd);
     cells.push_back(cell);
   }
 }
@@ -56,24 +58,20 @@ void Block::right() {
 }
 
 void Block::clockwise() {
-  clear();
   vector<int> vals = maxMin();
   for (auto &cell: cells) {
     Info info = cell.getInfo();
     cell.setCoords(info.x - (info.x - vals[3]) + (vals[2] - info.y),
                    info.y - (vals[1] - info.x) + (vals[2] - info.y));
-    cell.notifyObservers(false);
   }
 }
 
 void Block::cclockwise() {
-  clear();
   vector<int> vals = maxMin();
   for (auto &cell: cells) {
     Info info = cell.getInfo();
     cell.setCoords(info.x - (info.x - vals[3]) + (info.y - vals[0]),
                    info.y - (info.x - vals[3]) + (vals[2] - info.y));
-    cell.notifyObservers(false);
   }
 }
 
@@ -122,11 +120,9 @@ void Block::clear() {
 }
 
 void Block::shift(int rightBy, int downBy) {
-  clear();
   for (auto &cell: cells) {
     Info info = cell.getInfo();
     cell.setCoords(info.x + rightBy, info.y + downBy);
-    cell.notifyObservers(false);
   }
 }
 
