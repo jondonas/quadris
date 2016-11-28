@@ -5,7 +5,7 @@
 using namespace std;
 
 Quadris::Quadris(int argc, char *argv[]): text{false}, seed{0}, script_file{"sequence.txt"}, start_level{0} {
-  for (int i = 0; i < argc; ++i) {
+  for (int i = 1; i < argc; ++i) {
     string arg(argv[i]);
     if (arg == "-text") {
       text = true;
@@ -21,6 +21,12 @@ Quadris::Quadris(int argc, char *argv[]): text{false}, seed{0}, script_file{"seq
     else if (arg == "-startlevel") {
       ++i;
       stringstream(argv[i]) >> start_level;
+    }
+    else if (arg == "-h" || arg == "--help")
+      usage();
+    else {
+      cout << "**INVALID OPTION**" << endl;
+      usage();
     }
   }
   init();
@@ -71,7 +77,7 @@ void Quadris::start() {
       model->drop(mult);
     else if (cmdMatch(cmd, 2, "clockwise"))
       model->clockwise(mult);
-    else if (cmdMatch(cmd, 2, "cclockwise"))
+    else if (cmdMatch(cmd, 2, "counterclockwise"))
       model->cclockwise(mult);
     else if (cmd == "I")
       model->swapType(BlockType::IBlock);
@@ -111,4 +117,39 @@ bool Quadris::cmdMatch(string in, int min, string cmd) {
 
 void Quadris::init() {
   model = make_unique<QuadrisModel>(text, seed, script_file, start_level);
+}
+
+void Quadris::usage() {
+  cout << endl <<
+  "QUADRIS. Made by Ryan Quanz and Jonathan Donas.\n"
+  "Usage: ./quadris [options]\n\n"
+  
+  "Options:\n"
+  "  -text                    Run in text-only mode\n"
+  "  -seed [seed]             Set the random number generator's seed\n" 
+  "  -scriptfile [file]       Use [file] instead of the default sequence.txt\n"
+  "  -startlevel [n]          Start game in level [n]\n"
+  "  -h  or  --help           Display this help message\n\n"
+  
+  "In-game commands:\n"
+  "  left\n"
+  "  right\n"
+  "  down\n"
+  "  clockwise\n"
+  "  counterclockwise\n"
+  "  drop\n"
+  "  levelup\n"
+  "  leveldown\n"
+  "  restart\n"
+  "  norandom                 Make levels 3 and 4 read from input file\n"
+  "  random                   Make levels 3 and 4 random (default)\n"
+  "  sequence [file]          Change sequence file\n"
+  "  I, J, L, etc.            Replace current block with specified block\n"
+  "  hint                     Display a hint\n\n"
+  
+  "Commands can be shortened (eg. counterclockwise -> co)\n"
+  "and executed multiple times (eg. 2left)\n"
+  << endl;
+
+  exit(1);
 }
