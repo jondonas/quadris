@@ -22,6 +22,7 @@ public:
   bool isOver();
   bool setSeqFile(std::string);
   void setRandom(bool);
+  void swapType(BlockType);
 
 private:
   void clearRows();

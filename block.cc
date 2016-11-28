@@ -6,27 +6,31 @@
 #include <algorithm>
 using namespace std;
 
-Block::Block(BlockType type, shared_ptr<TextDisplay> td, int level): type{type}, td{td}, level{level} {
+Block::Block(BlockType type, shared_ptr<TextDisplay> td, int level, int offset_x, int offset_y): type{type}, td{td}, level{level} {
+  vector<vector<int>> coords;
   if (type == BlockType::TBlock) {
-    init({{0,0},{1,0},{2,0},{1,1}});
+    coords = {{0,0},{1,0},{2,0},{1,1}};
   } else if (type == BlockType::IBlock) {
-    init({{0,0},{1,0},{2,0},{3,0}});
+    coords = {{0,0},{1,0},{2,0},{3,0}};
   } else if (type == BlockType::JBlock) {
-    init({{0,0},{0,1},{1,1},{2,1}});
+    coords = {{0,0},{0,1},{1,1},{2,1}};
   } else if (type == BlockType::LBlock) {
-    init({{2,0},{0,1},{1,1},{2,1}});
+    coords = {{2,0},{0,1},{1,1},{2,1}};
   } else if (type == BlockType::OBlock) {
-    init({{0,0},{0,1},{1,0},{1,1}});
+    coords = {{0,0},{0,1},{1,0},{1,1}};
   } else if (type == BlockType::SBlock) {
-    init({{0,1},{1,1},{1,0},{2,0}});
+    coords = {{0,1},{1,1},{1,0},{2,0}};
   } else if (type == BlockType::ZBlock) {
-    init({{0,0},{1,0},{1,1},{2,1}});
+    coords = {{0,0},{1,0},{1,1},{2,1}};
   }
+  x = offset_x;
+  y = offset_y;
+  init(coords, offset_x, offset_y);
 }
 
-void Block::init(vector<vector<int>> coords) {
+void Block::init(vector<vector<int>> coords, int offset_x, int offset_y) {
   for (auto coord: coords) {
-    Cell cell = Cell(coord[0], coord[1], type);
+    Cell cell = Cell(coord[0] + offset_x, coord[1] + offset_y, type);
     cell.attach(td);
     cells.push_back(cell);
   }
@@ -38,14 +42,17 @@ vector<Cell> Block::positions() {
 
 void Block::down() {
   shift(0, 1);
+  y++;
 }
 
 void Block::left() {
   shift(-1, 0);
+  x--;
 }
 
 void Block::right() {
   shift(1, 0);
+  x++;
 }
 
 void Block::clockwise() {
@@ -68,6 +75,14 @@ void Block::cclockwise() {
                    info.y - (info.x - vals[3]) + (vals[2] - info.y));
     cell.notifyObservers(false);
   }
+}
+
+int Block::getX() const {
+  return x;
+}
+
+int Block::getY() const {
+  return y;
 }
 
 int Block::colsOccupied(int r) {
