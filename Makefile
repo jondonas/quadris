@@ -1,11 +1,11 @@
 CXX = g++-5
 CXXFLAGS = -std=c++14
-OBJECTS = main.o quadris.o block.o cell.o quadris_model.o textdisplay.o subject.o
+OBJECTS = main.o quadris.o block.o cell.o quadris_model.o textdisplay.o subject.o graphicsdisplay.o window.o
 DEPENDS = ${OBJECTS:.o=.d}
 EXEC = quadris
 
 ${EXEC}: ${OBJECTS}
-	${CXX} ${CXXFLAGS} ${OBJECTS} -o ${EXEC}
+	${CXX} ${CXXFLAGS} ${OBJECTS} -o ${EXEC} -lX11
 
 -include ${DEPENDS}
 

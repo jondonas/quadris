@@ -73,8 +73,27 @@ void Quadris::start() {
       model->clockwise(mult);
     else if (cmdMatch(cmd, 2, "cclockwise"))
       model->cclockwise(mult);
+    else if (cmd == "I")
+      model->swapType(BlockType::IBlock);
+    else if (cmd == "J")
+      model->swapType(BlockType::JBlock);
+    else if (cmd == "L")
+      model->swapType(BlockType::LBlock);
+    else if (cmd == "O")
+      model->swapType(BlockType::OBlock);
+    else if (cmd == "S")
+      model->swapType(BlockType::SBlock);
+    else if (cmd == "Z")
+      model->swapType(BlockType::ZBlock);
+    else if (cmd == "T")
+      model->swapType(BlockType::TBlock);
     else
       cout << "Invalid or ambiguous command" << endl;
+
+    if (model->isOver()) {
+      cout << "Game Over! You scored " << model->getScore() << " points." << endl;
+      init();
+    }
     
     cout << *model;
   }
