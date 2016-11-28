@@ -117,6 +117,15 @@ void QuadrisModel::levelDown(int m) {
   }
 }
 
+void QuadrisModel::swapType(BlockType t) {
+  int x = current_block.getX();
+  int y = current_block.getY();
+  int level = current_block.getLevel();
+  current_block.clear();
+  current_block = Block(t, td, level, x, y);
+  current_block.draw();
+}
+
 bool QuadrisModel::isOver() {
   return lost;
 }
@@ -251,7 +260,7 @@ void QuadrisModel::nextBlock() {
 
 
   // make the next block the current block
-  current_block = Block(next_block, td, level);
+  current_block = Block(next_block, td, level, 0, 0);
   // if the current space is occupied the game is over
   if (!canMove(0, 0)) {
     lost = true;

@@ -9,7 +9,7 @@ using namespace std;
 
 class Block {
 public:
-  Block(BlockType type, shared_ptr<TextDisplay>, int);
+  Block(BlockType type, shared_ptr<TextDisplay>, int, int offset_x = 0, int offset_y = 0);
   std::vector<Cell> positions();
   void down();
   void left();
@@ -24,14 +24,18 @@ public:
   bool isHeavy() const;
   bool isEmpty() const;
   int getLevel() const;
+  int getX() const;
+  int getY() const;
+  void clear();
 
 private:
   BlockType type;
   int level;
+  int x;
+  int y;
   std::vector<Cell> cells;
   std::shared_ptr<TextDisplay> td;
-  void init(vector<vector<int>>);
-  void clear();
+  void init(vector<vector<int>>, int offset_x = 0, int offset_y = 0);
   void shift(int, int);
 };
 
