@@ -16,6 +16,7 @@ level{0}, seed{seed}, lost{false} {
     level = start_level;
   if (seed)
     seed_set = true;
+  drops_without_clear = 0;
   score = 0;
   // for now, exit if seq file can't be loaded at start. todo: let user play without
   // loading seq file.
@@ -126,7 +127,10 @@ void QuadrisModel::cclockwise(int m) {
 
 void QuadrisModel::levelUp(int m) {
   for (int i = 0; i < m; ++i) {
-    if (level != 4)
+    if (level == 3) {
+      drops_without_clear = 0;
+    }
+    if (level <  4)
       ++level;
   }
   if (gd)
@@ -178,8 +182,11 @@ void QuadrisModel::clearRows() {
   }
   updatePositions();
   if (rows_cleared > 0) {
+    drops_without_clear = 0;
     rows_cleared += level;
     updateScore(rows_cleared * rows_cleared);
+  } else {
+    drops_without_clear++;
   }
 }
 
@@ -279,6 +286,18 @@ bool QuadrisModel::canMove(int x, int y) {
 
 void QuadrisModel::nextBlock() {
   updatePositions();
+
+  if (drops_without_clear == 5 && level >= 4) {
+    current_block = Block(BlockType::SingleBlock, td, gd, level, 5, 0);
+    if (canMove(0, 0)) {
+      drop(1);
+      drops_without_clear = 0;
+    } else {
+      lost = true;
+    }
+    return;
+  }
+
   // distrubtion where all reals between 0 and 1 have equal probability
   uniform_real_distribution<double> distribution(0.0, 1.0);
   // create a seed based on current time so that we don't always have the same blocks
@@ -291,7 +310,7 @@ void QuadrisModel::nextBlock() {
   // make the next block the current block
   current_block = Block(next_block, td, gd, level, 0, 0);
   // if the current space is occupied the game is over
-  if (!canMove(0, 0)) {
+  if(!canMove(0, 0)) {
     lost = true;
     return;
   }
@@ -415,6 +434,5 @@ std::ostream &operator<<(std::ostream &out, const QuadrisModel &model) {
     cout << "OO\nOO" << endl;
   else if (model.next_block == BlockType::TBlock)
     cout << "TTT\n T" << endl;
-
   return out;
 }

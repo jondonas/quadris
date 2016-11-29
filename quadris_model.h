@@ -40,6 +40,7 @@ private:
   BlockType next_block;
   std::ifstream file_in;
   bool lost;
+  int drops_without_clear;
   void nextBlock();
   bool canDown();
   bool canRight();

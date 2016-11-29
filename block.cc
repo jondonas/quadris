@@ -22,6 +22,8 @@ Block::Block(BlockType type, shared_ptr<TextDisplay> td, shared_ptr<GraphicsDisp
     coords = {{0,1},{1,1},{1,0},{2,0}};
   } else if (type == BlockType::ZBlock) {
     coords = {{0,0},{1,0},{1,1},{2,1}};
+  } else if (type == BlockType::SingleBlock) {
+    coords = {{0, 0}};
   }
   x = offset_x;
   y = offset_y;
