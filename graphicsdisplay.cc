@@ -37,6 +37,8 @@ void GraphicsDisplay::notify(Info info) {
     drawCell(info.x, info.y, Xwindow::Red);
   else if (info.type == BlockType::TBlock)
     drawCell(info.x, info.y, Xwindow::Purple);
+  else if (info.type == BlockType::SingleBlock)
+    drawCell(info.x, info.y, Xwindow::Black);
 }
 
 void GraphicsDisplay::drawCell(int x, int y, int colour) {
