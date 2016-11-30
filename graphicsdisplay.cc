@@ -11,7 +11,6 @@ GraphicsDisplay::GraphicsDisplay(): xw{Xwindow()} {
   xw.fillRectangle(485, 10, 5, 480, Xwindow::Black);
   // Title:
   xw.drawString(40, 20, "QUADRIS");
-  //xw.fillRectangle(indent-1, 25, 1, blockSize*n, Xwindow::Blue);
   // Credits: :-)
   xw.drawString(10, 455, "Made by:");
   xw.drawString(10, 470, "Ryan Quanz &");
@@ -38,7 +37,7 @@ void GraphicsDisplay::notify(Info info) {
   else if (info.type == BlockType::TBlock)
     drawCell(info.x, info.y, Xwindow::Purple);
   else if (info.type == BlockType::SingleBlock)
-    drawCell(info.x, info.y, Xwindow::Black);
+    drawCell(info.x, info.y, Xwindow::Brown);
 }
 
 void GraphicsDisplay::drawCell(int x, int y, int colour) {
