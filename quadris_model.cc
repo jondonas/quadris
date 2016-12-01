@@ -3,18 +3,17 @@
 #include <fstream>
 #include <chrono>
 #include <iomanip>
+#include <cmath>
 #include <cstdlib>
 #define LEVEL_1 { 1.0/12.0, 1.0/6.0, 2.0/6.0, 3.0/6.0, 4.0/6.0, 5.0/6.0 }
 #define LEVEL_2 { 1.0/7.0, 2.0/7.0, 3.0/7.0, 4.0/7.0, 5.0/7.0, 6.0/7.0 }
 #define LEVEL_3 { 2.0/9.0, 4.0/9.0, 5.0/9.0, 6.0/9.0, 7.0/9.0, 8.0/9.0 }
-
 using namespace std;
 
 int QuadrisModel::high_score = 0;
 
 QuadrisModel::QuadrisModel(bool text, int seed, string script_file, int start_level):
-td{make_shared<TextDisplay>()}, gd{nullptr}, current_block{Block(BlockType::Empty, td, gd, false)}, next_block{BlockType::Empty}, block_random{true}, 
-level{0}, seed{seed}, lost{false} {
+td{make_shared<TextDisplay>()}, gd{nullptr}, current_block{Block(BlockType::Empty, td, gd, 0)}, next_block{BlockType::Empty}, hint_block{Block(BlockType::Empty, td, gd, 0)}, block_random{true}, level{0}, seed{seed}, lost{false} {
   if (start_level >= 0 && start_level <= 4)
     level = start_level;
   
@@ -164,6 +163,27 @@ bool QuadrisModel::isOver() {
 int QuadrisModel::getScore() {
   return score;
 }
+
+void QuadrisModel::getHint() {
+  hint_block = suggestedBlock();
+  hint_block.changeType(BlockType::HintBlock);
+  hint_block.draw();
+}
+
+void QuadrisModel::clearHint() {
+  hint_block.clear();
+}
+
+void QuadrisModel::automate(int m) {
+  for (int i = 0; i < m; ++i) {
+    current_block.clear();
+    current_block = suggestedBlock();
+    drop(1);
+    if (isOver())
+      break;
+  }
+}
+
 
 void QuadrisModel::clearRows() {
   int rows_cleared = 0;
@@ -417,4 +437,135 @@ std::ostream &operator<<(std::ostream &out, const QuadrisModel &model) {
   else if (model.next_block == BlockType::TBlock)
     cout << "TTT\n T" << endl;
   return out;
+}
+
+/////////////// AI LOGIC ///////////////
+// In a perfect world this would have its own class.
+// The AI is currently limited to choosing the "best move" that you can get to without
+// lateral movements. Eg, if the best move is under an overhang, it won't find it.
+
+Block QuadrisModel::suggestedBlock() {
+  Block best_position = current_block;
+  int best_score = -100000;
+  Block hold_current = current_block;
+
+  // find the "playing field" of the block. Eg, find any barriers that it can't cross
+  while (canLeft())
+    current_block.left();
+  int leftBarrier = current_block.maxMin()[3];
+  while (canRight())
+    current_block.right();
+  int rightBarrier = current_block.maxMin()[1];
+
+  Block top_spot = Block(current_block.getType(), td, gd, level, leftBarrier, current_block.getY());
+
+  // create a "snapshot" of the current grid to use to improve calculation efficiency
+  vector<vector<int>> grid;
+  for (int i = 0; i < 15; ++i) {
+    vector<int> temp;
+    for (int ii = 0; ii < 11; ++ii)
+      temp.push_back(0);
+    grid.push_back(temp);
+  }
+  for (auto position : positions) {
+    if (!(position.y < 0))
+      grid[position.y][position.x] = 1;
+  }
+
+  // iterate through all possible positions and find the best spot
+  for (int i = leftBarrier; i <= rightBarrier; ++i, top_spot.right()) {
+    for (int ii = 0; ii < 4; ++ii, top_spot.clockwise()) {
+      current_block = top_spot;
+      if (!canMove(0,0)) continue;
+      while (canDown())
+        current_block.down();
+      
+      // add the current block to a copy of the grid
+      vector<vector<int>> temp_grid = grid;
+      for (auto cell: current_block.positions()) {
+        Info info = cell.getInfo();
+        if (!(info.y < 0))
+          temp_grid[info.y][info.x] = 1;
+      }
+
+      // calculate metrics and score
+      int th = totHeight(temp_grid);
+      int h = holes(temp_grid);
+      int b = bumpiness(temp_grid);
+      int cr = completeRows(temp_grid);
+      // these numbers determine what makes a "good move"
+      // I did a lot of testing and this seems to be the best combination
+      // It solves about 7000 moves when you set the seed to 8989898 (highest I got to in testing)
+      double block_score = (-0.1 * th) + (-5 * h) + (-1 * b) + pow(2 * cr, 2);
+
+      if (block_score >= best_score) {
+        best_score = block_score;
+        best_position = current_block;
+      }
+    }
+  }
+
+  current_block = hold_current;
+  return best_position;
+}
+
+// returns sum of the squares of the heights of columns
+int QuadrisModel::totHeight(vector<vector<int>> grid) {
+  int th = 0;
+  for (int i = 0; i < 11; ++i) {
+    int col = colHeight(grid, i);
+    // penalize moves that are too close to the top
+    th += col * col;
+  }
+
+  return th;
+}
+
+// returns the number of holes on the layout. A hole is any empty space with a block above
+int QuadrisModel::holes(vector<vector<int>> grid) {
+  int h = 0;
+  for(int i = 0; i < 11; ++i) {
+    int empty = 0;
+    for(int ii = 0; ii < 15; ++ii) {
+      if (grid[ii][i] == 0)
+        ++empty;
+    }
+    h += empty - (15 - colHeight(grid, i));
+  }
+  
+  return h;  
+}
+
+// returns the bumpiness of the layout. Higher means less flat.
+int QuadrisModel::bumpiness(vector<vector<int>> grid) {
+  int b = 0;
+  for (int i = 0; i < 10; ++i)
+    b += abs(colHeight(grid, i) - colHeight(grid, i + 1));
+
+  return b;
+}
+
+// returns the number of filled rows
+int QuadrisModel::completeRows(vector<vector<int>> grid) {
+  int cr = 0;
+  for(int i = 0; i < 15; ++i) {
+    int cols_occupied = 0;
+    for(int ii = 0; ii < 11; ++ii) {
+      if (grid[i][ii] == 1)
+        ++cols_occupied;
+    }
+    if (cols_occupied == 11)
+      ++cr;
+  }
+
+  return cr;
+}
+
+// returns height of a column
+int QuadrisModel::colHeight(vector<vector<int>> grid, int col) {
+  for (int i = 0; i < 15; ++i) {
+    if (grid[i][col] == 1)
+      return 15 - i;
+  }
+  return 0;
 }

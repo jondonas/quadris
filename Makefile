@@ -10,4 +10,4 @@ ${EXEC}: ${OBJECTS}
 -include ${DEPENDS}
 
 clean:
-	-rm *.o
+	-rm *.o quadris
