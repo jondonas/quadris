@@ -35,6 +35,8 @@ void TextDisplay::notify(Info info) {
     theDisplay[info.y][info.x] = 'T';
   else if (info.type == BlockType::SingleBlock)
     theDisplay[info.y][info.x] = '*';
+  else if (info.type == BlockType::HintBlock)
+    theDisplay[info.y][info.x] = '?';
 }
 
 TextDisplay::~TextDisplay() {}

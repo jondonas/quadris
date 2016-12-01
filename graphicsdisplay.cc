@@ -38,13 +38,18 @@ void GraphicsDisplay::notify(Info info) {
     drawCell(info.x, info.y, Xwindow::Purple);
   else if (info.type == BlockType::SingleBlock)
     drawCell(info.x, info.y, Xwindow::Brown);
+  else if (info.type == BlockType::HintBlock)
+    drawCell(info.x, info.y, Xwindow::Hint);
 }
 
 void GraphicsDisplay::drawCell(int x, int y, int colour) {
   int y_margin = 25;
   int x_margin = 145;
 
-  xw.fillRectangle(x_margin + 30*x, y_margin + 30*y, 29, 29, colour);
+  if (colour == Xwindow::Hint)
+    xw.drawString(x_margin + 30*x + 12, y_margin + 30*y + 18, "?");
+  else
+    xw.fillRectangle(x_margin + 30*x, y_margin + 30*y, 29, 29, colour);
 }
 
 void GraphicsDisplay::drawLegend(int level, int score, int high_score, vector<vector<int>> cells, int colour) {

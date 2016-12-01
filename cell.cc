@@ -10,3 +10,7 @@ void Cell::setCoords(int xx, int yy) {
   x = xx;
   y = yy;
 }
+
+void Cell::changeType(BlockType t) {
+  type = t;
+}

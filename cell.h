@@ -10,6 +10,7 @@ public:
   Cell(int, int, BlockType);
   Info getInfo() const override;
   void setCoords(int, int);
+  void changeType(BlockType);
 private:
   int x;
   int y;

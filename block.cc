@@ -158,3 +158,13 @@ int Block::getLevel() const {
 bool Block::isEmpty() const {
   return cells.empty();
 }
+
+BlockType Block::getType() const {
+  return type;
+}
+
+void Block::changeType(BlockType t) {
+  type = t;
+  for (auto &cell: cells)
+    cell.changeType(t);
+}

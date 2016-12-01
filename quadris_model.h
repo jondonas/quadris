@@ -25,6 +25,9 @@ public:
   void setRandom(bool);
   void swapType(BlockType);
   int getScore();
+  void getHint();
+  void automate(int);
+  void clearHint();
 
 private:
   void clearRows();
@@ -38,6 +41,7 @@ private:
   bool seed_set;
   Block current_block;
   BlockType next_block;
+  Block hint_block;
   std::ifstream file_in;
   bool lost;
   int drops_without_clear;
@@ -56,6 +60,12 @@ private:
   double getRandom();
   std::shared_ptr<TextDisplay> td;
   std::shared_ptr<GraphicsDisplay> gd;
+  int totHeight(vector<vector<int>>);
+  int holes(vector<vector<int>>);
+  int bumpiness(vector<vector<int>>);
+  int completeRows(vector<vector<int>>);
+  int colHeight(vector<vector<int>>, int);
+  Block suggestedBlock();
 
   friend std::ostream &operator<<(std::ostream &out, const QuadrisModel &model);
 };

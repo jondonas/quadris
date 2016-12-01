@@ -28,6 +28,8 @@ public:
   int getLevel() const;
   int getX() const;
   int getY() const;
+  BlockType getType() const;
+  void changeType(BlockType);
 
 private:
   BlockType type;

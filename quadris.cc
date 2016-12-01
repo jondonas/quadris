@@ -35,10 +35,15 @@ Quadris::Quadris(int argc, char *argv[]): text{false}, seed{0}, script_file{"seq
 void Quadris::start() {
   string cmd;
   int mult;
+  bool last_hint = false;
   cout << *model;
 
   while (cin >> cmd) {
     mult = 1;
+    if (last_hint) {
+      last_hint = false;
+      model->clearHint();
+    }
 
     if (47 < cmd[0] && cmd[0] < 58) {
       string num = "";
@@ -61,8 +66,10 @@ void Quadris::start() {
       model->setRandom(true);
     else if (cmdMatch(cmd, 2, "restart"))
       init();
-    // todo: hint
-    else if (cmdMatch(cmd, 1, "hint")) {}
+    else if (cmdMatch(cmd, 1, "hint")) {
+      last_hint = true;
+      model->getHint();
+    }
     else if (cmdMatch(cmd, 6, "levelup"))
       model->levelUp(mult);
     else if (cmdMatch(cmd, 6, "leveldown"))
@@ -79,6 +86,8 @@ void Quadris::start() {
       model->clockwise(mult);
     else if (cmdMatch(cmd, 2, "counterclockwise"))
       model->cclockwise(mult);
+    else if (cmdMatch(cmd, 1, "auto"))
+      model->automate(mult);
     else if (cmd == "I")
       model->swapType(BlockType::IBlock);
     else if (cmd == "J")
@@ -145,7 +154,8 @@ void Quadris::usage() {
   "  random                   Make levels 3 and 4 random (default)\n"
   "  sequence [file]          Change sequence file\n"
   "  I, J, L, etc.            Replace current block with specified block\n"
-  "  hint                     Display a hint\n\n"
+  "  hint                     Display a hint\n"
+  "  auto                     Makes the best move for you\n\n"
   
   "Commands can be shortened (eg. counterclockwise -> co)\n"
   "and executed multiple times (eg. 2left)\n"
