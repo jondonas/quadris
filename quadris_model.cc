@@ -1,21 +1,23 @@
 #include "quadris_model.h"
 #include <iostream>
 #include <fstream>
-#include <random>
 #include <chrono>
 #include <iomanip>
-//#include <vector>
+#include <cstdlib>
+#define LEVEL_1 { 1.0/12.0, 1.0/6.0, 2.0/6.0, 3.0/6.0, 4.0/6.0, 5.0/6.0 }
+#define LEVEL_2 { 1.0/7.0, 2.0/7.0, 3.0/7.0, 4.0/7.0, 5.0/7.0, 6.0/7.0 }
+#define LEVEL_3 { 2.0/9.0, 4.0/9.0, 5.0/9.0, 6.0/9.0, 7.0/9.0, 8.0/9.0 }
+
 using namespace std;
 
 int QuadrisModel::high_score = 0;
 
-QuadrisModel::QuadrisModel(bool text, unsigned seed, string script_file, int start_level):
+QuadrisModel::QuadrisModel(bool text, int seed, string script_file, int start_level):
 td{make_shared<TextDisplay>()}, gd{nullptr}, current_block{Block(BlockType::Empty, td, gd, false)}, next_block{BlockType::Empty}, block_random{true}, 
 level{0}, seed{seed}, lost{false} {
   if (start_level >= 0 && start_level <= 4)
     level = start_level;
-  if (seed)
-    seed_set = true;
+  
   drops_without_clear = 0;
   score = 0;
   // for now, exit if seq file can't be loaded at start. todo: let user play without
@@ -25,7 +27,7 @@ level{0}, seed{seed}, lost{false} {
 
   if (!text)
     gd = make_shared<GraphicsDisplay>();
-  
+  srand(seed);
 // load two random blocks: one for current and one for next block
   nextBlock();
   nextBlock();
@@ -299,23 +301,22 @@ void QuadrisModel::nextBlock() {
   }
 
   // distrubtion where all reals between 0 and 1 have equal probability
-  uniform_real_distribution<double> distribution(0.0, 1.0);
-  // create a seed based on current time so that we don't always have the same blocks
-  if (!seed_set)
-    seed = chrono::system_clock::now().time_since_epoch().count();
-  default_random_engine generator(seed);
-  double random = distribution(generator);
+  double random = getRandom();
 
 
   // make the next block the current block
-  current_block = Block(next_block, td, gd, level, 0, 0);
+  if (next_block == BlockType::IBlock) {
+    current_block = Block(next_block, td, gd, level, 0, 0);
+  } else {
+    current_block = Block(next_block, td, gd, level, 0, 1);
+  }
   // if the current space is occupied the game is over
   if(!canMove(0, 0)) {
     lost = true;
     return;
   }
   current_block.draw();
-
+    
   if (level == 0 || !block_random) {
     string type;
     file_in >> type;
@@ -334,50 +335,27 @@ void QuadrisModel::nextBlock() {
     } else if (type == "T") {
       next_block = BlockType::TBlock;
     } 
-  } else if (level == 1) {
-    if (random <= 1.0/12.0) {
-      next_block = BlockType::ZBlock;
-    } else if (random <= 1.0/6.0) {
-      next_block = BlockType::SBlock;
-    } else if (random <= 2.0/6.0) {
-      next_block = BlockType::LBlock;
-    } else if (random <= 3.0/6.0) {
-      next_block = BlockType::JBlock;
-    } else if (random <= 4.0/6.0) {
-      next_block = BlockType::IBlock;
-    } else if (random <= 5.0/6.0) {
-      next_block = BlockType::OBlock;
+  } else  {
+    vector<double> probabilities;
+    if (level == 1) {
+      probabilities = LEVEL_1;
+    } else if (level == 2) {
+      probabilities = LEVEL_2;
     } else {
-      next_block = BlockType::TBlock;
+      probabilities = LEVEL_3;
     }
-  } else if (level == 2) {
-    if (random <= 1.0/7.0) {
+
+    if (random <= probabilities[0]) {
       next_block = BlockType::ZBlock;
-    } else if (random <= 2.0/7.0) {
+    } else if (random <= probabilities[1]) {
       next_block = BlockType::SBlock;
-    } else if (random <= 3.0/7.0) {
+    } else if (random <= probabilities[2]) {
       next_block = BlockType::LBlock;
-    } else if (random <= 4.0/7.0) {
+    } else if (random <= probabilities[3]) {
       next_block = BlockType::JBlock;
-    } else if (random <= 5.0/7.0) {
+    } else if (random <= probabilities[4]) {
       next_block = BlockType::IBlock;
-    } else if (random <= 6.0/7.0) {
-      next_block = BlockType::OBlock;
-    } else {
-      next_block = BlockType::TBlock;
-    }
-  } else {
-    if (random <= 2.0/9.0) {
-      next_block = BlockType::ZBlock;
-    } else if (random <= 4.0/9.0) {
-      next_block = BlockType::SBlock;
-    } else if (random <= 5.0/9.0) {
-      next_block = BlockType::LBlock;
-    } else if (random <= 6.0/9.0) {
-      next_block = BlockType::JBlock;
-    } else if (random <= 7.0/9.0) {
-      next_block = BlockType::IBlock;
-    } else if (random <= 8.0/9.0) {
+    } else if (random <= probabilities[5]) {
       next_block = BlockType::OBlock;
     } else {
       next_block = BlockType::TBlock;
@@ -392,6 +370,10 @@ void QuadrisModel::updatePositions() {
       positions.push_back(position.getInfo());
     }
   }
+}
+
+double QuadrisModel::getRandom() {
+ return (rand() % 1000) / 1000.0;
 }
 
 void QuadrisModel::drawLegend() {

@@ -11,7 +11,7 @@ public:
 private:
   std::unique_ptr<QuadrisModel> model;
   bool text;
-  unsigned seed;
+  int seed;
   std::string script_file;
   int start_level;
   bool cmdMatch(std::string, int, std::string);

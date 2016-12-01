@@ -11,7 +11,7 @@
 
 class QuadrisModel {
 public:
-  QuadrisModel(bool, unsigned, std::string, int);
+  QuadrisModel(bool, int, std::string, int);
   void down(int m);
   void right(int m);
   void left(int m);
@@ -33,7 +33,7 @@ private:
   int level;
   static int high_score;
   int score;
-  unsigned seed;
+  int seed;
   bool block_random;
   bool seed_set;
   Block current_block;
@@ -53,6 +53,7 @@ private:
   void updateScore(int);
   void clearBlocks();
   void drawLegend();
+  double getRandom();
   std::shared_ptr<TextDisplay> td;
   std::shared_ptr<GraphicsDisplay> gd;
 
