@@ -9,19 +9,19 @@ using namespace std;
 Block::Block(BlockType type, shared_ptr<TextDisplay> td, shared_ptr<GraphicsDisplay> gd, int level, int offset_x, int offset_y): type{type}, td{td}, gd{gd}, level{level} { 
   vector<vector<int>> coords;
   if (type == BlockType::TBlock) {
-    coords = {{0,0},{1,0},{2,0},{1,1}};
+    coords = {{0,-1},{1,-1},{2,-1},{1,0}};
   } else if (type == BlockType::IBlock) {
     coords = {{0,0},{1,0},{2,0},{3,0}};
   } else if (type == BlockType::JBlock) {
-    coords = {{0,0},{0,1},{1,1},{2,1}};
+    coords = {{0,-1},{1,-1},{2,-1},{2,0}};
   } else if (type == BlockType::LBlock) {
-    coords = {{2,0},{0,1},{1,1},{2,1}};
+    coords = {{2,-1},{0,0},{1,0},{2,0}};
   } else if (type == BlockType::OBlock) {
-    coords = {{0,0},{0,1},{1,0},{1,1}};
+    coords = {{0,-1},{0,0},{1,-1},{1,0}};
   } else if (type == BlockType::SBlock) {
-    coords = {{0,1},{1,1},{1,0},{2,0}};
+    coords = {{0,0},{1,0},{1,-1},{2,-1}};
   } else if (type == BlockType::ZBlock) {
-    coords = {{0,0},{1,0},{1,1},{2,1}};
+    coords = {{0,-1},{1,-1},{1,0},{2,0}};
   } else if (type == BlockType::SingleBlock) {
     coords = {{0, 0}};
   }
