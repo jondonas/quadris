@@ -27,7 +27,8 @@ td{make_shared<TextDisplay>()}, gd{nullptr}, current_block{Block(BlockType::Empt
   if (!text)
     gd = make_shared<GraphicsDisplay>();
   srand(seed);
-// load two random blocks: one for current and one for next block
+  held_block = BlockType::Empty;
+  // load two random blocks: one for current and one for next block
   nextBlock();
   nextBlock();
 
@@ -145,6 +146,19 @@ void QuadrisModel::levelDown(int m) {
   }
   if (gd)
     drawLegend();
+}
+
+void QuadrisModel::hold() {
+  if (held_block == BlockType::Empty) {
+    held_block = current_block.getType();
+    current_block.clear();
+    nextBlock();
+  } else {
+    BlockType type = current_block.getType();
+    swapType(held_block);
+    held_block = type;
+  }
+  drawLegend();
 }
 
 void QuadrisModel::swapType(BlockType t) {
@@ -397,20 +411,7 @@ double QuadrisModel::getRandom() {
 }
 
 void QuadrisModel::drawLegend() {
-  if (next_block == BlockType::ZBlock)
-    gd->drawLegend(level, score, high_score, {{0,0},{1,0},{1,1},{2,1}}, Xwindow::Red);
-  else if (next_block == BlockType::SBlock)
-    gd->drawLegend(level, score, high_score, {{0,1},{1,1},{1,0},{2,0}}, Xwindow::Green);
-  else if (next_block == BlockType::LBlock)
-    gd->drawLegend(level, score, high_score, {{2,0},{0,1},{1,1},{2,1}}, Xwindow::Orange);
-  else if (next_block == BlockType::JBlock)
-    gd->drawLegend(level, score, high_score, {{0,0},{0,1},{1,1},{2,1}}, Xwindow::Blue);
-  else if (next_block == BlockType::IBlock)
-    gd->drawLegend(level, score, high_score, {{0,0},{1,0},{2,0},{3,0}}, Xwindow::Cyan);
-  else if (next_block == BlockType::OBlock)
-    gd->drawLegend(level, score, high_score, {{0,0},{0,1},{1,0},{1,1}}, Xwindow::Yellow);
-  else if (next_block == BlockType::TBlock)
-    gd->drawLegend(level, score, high_score, {{0,0},{1,0},{2,0},{1,1}}, Xwindow::Purple);
+  gd->drawLegend(level, score, high_score, blockPosns(next_block), blockColour(next_block), blockPosns(held_block), blockColour(held_block));
 }
 
 std::ostream &operator<<(std::ostream &out, const QuadrisModel &model) {
@@ -421,22 +422,64 @@ std::ostream &operator<<(std::ostream &out, const QuadrisModel &model) {
   cout << *(model.td);
   cout << "  -----------" << endl;
   cout << "Next:" << endl;
-
-  if (model.next_block == BlockType::ZBlock)
-    cout << "ZZ\n ZZ" << endl;
-  else if (model.next_block == BlockType::SBlock)
-    cout << " SS\nSS" << endl;
-  else if (model.next_block == BlockType::LBlock)
-    cout << "  L\nLLL" << endl;
-  else if (model.next_block == BlockType::JBlock)
-    cout << "J  \nJJJ" << endl;
-  else if (model.next_block == BlockType::IBlock)
-    cout << "IIII" << endl;
-  else if (model.next_block == BlockType::OBlock)
-    cout << "OO\nOO" << endl;
-  else if (model.next_block == BlockType::TBlock)
-    cout << "TTT\n T" << endl;
+  printBlock(out, model.next_block);
+  cout << "Hold:" << endl;
+  printBlock(out, model.held_block);
   return out;
+}
+
+ostream &printBlock(ostream &out, BlockType t) {
+  if (t == BlockType::ZBlock)
+    out << "ZZ\n ZZ" << endl;
+  else if (t == BlockType::SBlock)
+    out << " SS\nSS" << endl;
+  else if (t == BlockType::LBlock)
+    out << "  L\nLLL" << endl;
+  else if (t == BlockType::JBlock)
+    out << "J  \nJJJ" << endl;
+  else if (t == BlockType::IBlock)
+    out << "IIII" << endl;
+  else if (t == BlockType::OBlock)
+    out << "OO\nOO" << endl;
+  else if (t == BlockType::TBlock)
+    out << "TTT\n T" << endl;
+  return out;
+}
+
+int QuadrisModel::blockColour(BlockType t) {
+  if (t == BlockType::ZBlock)
+    return Xwindow::Red;
+  else if (t == BlockType::SBlock)
+    return Xwindow::Green;
+  else if (t == BlockType::LBlock)
+    return Xwindow::Orange;
+  else if (t == BlockType::JBlock)
+    return Xwindow::Blue;
+  else if (t == BlockType::IBlock)
+    return Xwindow::Cyan;
+  else if (t == BlockType::OBlock)
+    return Xwindow::Yellow;
+  else if (t == BlockType::TBlock)
+    return Xwindow::Purple;
+  return 0;
+}
+
+vector<vector<int>> QuadrisModel::blockPosns(BlockType t) {
+  if (t == BlockType::ZBlock)
+    return {{0,0},{1,0},{1,1},{2,1}};
+  else if (t == BlockType::SBlock)
+    return {{0,1},{1,1},{1,0},{2,0}};
+  else if (t == BlockType::LBlock)
+    return {{2,0},{0,1},{1,1},{2,1}};
+  else if (t == BlockType::JBlock)
+    return {{0,0},{0,1},{1,1},{2,1}};
+  else if (t == BlockType::IBlock)
+    return {{0,0},{1,0},{2,0},{3,0}};
+  else if (t == BlockType::OBlock)
+    return {{0,0},{0,1},{1,0},{1,1}};
+  else if (t == BlockType::TBlock)
+    return {{0,0},{1,0},{2,0},{1,1}};
+  return {};
 }
 
 /////////////// AI LOGIC ///////////////

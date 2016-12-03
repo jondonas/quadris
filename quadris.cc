@@ -66,10 +66,11 @@ void Quadris::start() {
       model->setRandom(true);
     else if (cmdMatch(cmd, 2, "restart"))
       init();
-    else if (cmdMatch(cmd, 1, "hint")) {
+    else if (cmdMatch(cmd, 2, "hint")) {
       last_hint = true;
       model->getHint();
-    }
+    } else if (cmdMatch(cmd, 2, "hold"))
+      model->hold();
     else if (cmdMatch(cmd, 6, "levelup"))
       model->levelUp(mult);
     else if (cmdMatch(cmd, 6, "leveldown"))

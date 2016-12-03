@@ -52,11 +52,11 @@ void GraphicsDisplay::drawCell(int x, int y, int colour) {
     xw.fillRectangle(x_margin + 30*x, y_margin + 30*y, 29, 29, colour);
 }
 
-void GraphicsDisplay::drawLegend(int level, int score, int high_score, vector<vector<int>> cells, int colour) {
+void GraphicsDisplay::drawLegend(int level, int score, int high_score, vector<vector<int>> next_cells, int next_colour, vector<vector<int>> hold_cells, int hold_colour) {
   int y_margin = 60;
   int x_margin = 10;
   // clear legend
-  xw.fillRectangle(x_margin, 40, 115, 200, Xwindow::White);
+  xw.fillRectangle(x_margin, 40, 115, 250, Xwindow::White);
 
   // draw legend, right padded
   string lvl = "Level:";
@@ -69,8 +69,15 @@ void GraphicsDisplay::drawLegend(int level, int score, int high_score, vector<ve
 
   // clear and draw next block;
   y_margin = 170;
-  for (auto cell: cells) {
-    xw.fillRectangle(x_margin + cell[0]*20, y_margin + cell[1]*20, 19, 19, colour);
+  for (auto cell: next_cells) {
+    xw.fillRectangle(x_margin + cell[0]*20, y_margin + cell[1]*20, 19, 19, next_colour);
+  }
+
+  xw.drawString(x_margin, y_margin + 50, "Hold:");
+  // clear and draw hold block
+  y_margin = 230;
+  for (auto cell: hold_cells) {
+    xw.fillRectangle(x_margin + cell[0]*20, y_margin + cell[1]*20, 19, 19, hold_colour);
   }
 }
 

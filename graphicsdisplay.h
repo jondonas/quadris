@@ -12,7 +12,7 @@ class GraphicsDisplay: public Observer {
  public:
   GraphicsDisplay();
   void notify(Info info) override;
-  void drawLegend(int, int, int, std::vector<std::vector<int>>, int);
+  void drawLegend(int, int, int, std::vector<std::vector<int>>, int, std::vector<std::vector<int>>, int);
   ~GraphicsDisplay();
 
 };

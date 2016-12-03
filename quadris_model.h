@@ -24,6 +24,7 @@ public:
   bool setSeqFile(std::string);
   void setRandom(bool);
   void swapType(BlockType);
+  void hold();
   int getScore();
   void getHint();
   void automate(int);
@@ -58,6 +59,9 @@ private:
   void clearBlocks();
   void drawLegend();
   double getRandom();
+  int blockColour(BlockType);
+  vector<vector<int>> blockPosns(BlockType);
+  BlockType held_block; 
   std::shared_ptr<TextDisplay> td;
   std::shared_ptr<GraphicsDisplay> gd;
   int totHeight(vector<vector<int>>);
@@ -69,5 +73,7 @@ private:
 
   friend std::ostream &operator<<(std::ostream &out, const QuadrisModel &model);
 };
+
+std::ostream &printBlock(std::ostream&, BlockType);
 
 #endif
