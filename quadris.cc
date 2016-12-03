@@ -4,7 +4,7 @@
 #include "quadris.h"
 using namespace std;
 
-Quadris::Quadris(int argc, char *argv[]): text{false}, seed{0}, script_file{"sequence.txt"}, start_level{0} {
+Quadris::Quadris(int argc, char *argv[]): text{false}, seed{0}, script_file{"sequence.txt"}, start_level{0}, hold{false} {
   for (int i = 1; i < argc; ++i) {
     string arg(argv[i]);
     if (arg == "-text") {
@@ -24,6 +24,8 @@ Quadris::Quadris(int argc, char *argv[]): text{false}, seed{0}, script_file{"seq
     }
     else if (arg == "-h" || arg == "--help")
       usage();
+    else if (arg == "-hold")
+      hold = true;
     else {
       cout << "**INVALID OPTION**" << endl;
       usage();
@@ -69,7 +71,7 @@ void Quadris::start() {
     else if (cmdMatch(cmd, 2, "hint")) {
       last_hint = true;
       model->getHint();
-    } else if (cmdMatch(cmd, 2, "hold"))
+    } else if (hold && cmdMatch(cmd, 2, "hold"))
       model->hold();
     else if (cmdMatch(cmd, 6, "levelup"))
       model->levelUp(mult);
@@ -126,7 +128,7 @@ bool Quadris::cmdMatch(string in, int min, string cmd) {
 }
 
 void Quadris::init() {
-  model = make_unique<QuadrisModel>(text, seed, script_file, start_level);
+  model = make_unique<QuadrisModel>(text, seed, script_file, start_level, hold);
 }
 
 void Quadris::usage() {
@@ -139,7 +141,8 @@ void Quadris::usage() {
   "  -seed [seed]             Set the random number generator's seed\n" 
   "  -scriptfile [file]       Use [file] instead of the default sequence.txt\n"
   "  -startlevel [n]          Start game in level [n]\n"
-  "  -h  or  --help           Display this help message\n\n"
+  "  -h  or  --help           Display this help message\n"
+  "  -hold                    Play with the hold feature(bonus!)\n"
   
   "In-game commands:\n"
   "  left\n"
