@@ -11,7 +11,7 @@
 
 class QuadrisModel {
 public:
-  QuadrisModel(bool, int, std::string, int);
+  QuadrisModel(bool, int, std::string, int, bool);
   void down(int m);
   void right(int m);
   void left(int m);
@@ -23,7 +23,7 @@ public:
   bool isOver();
   bool setSeqFile(std::string);
   void setRandom(bool);
-  void swapType(BlockType);
+  bool swapType(BlockType);
   void hold();
   int getScore();
   void getHint();
@@ -70,6 +70,7 @@ private:
   int completeRows(vector<vector<int>>);
   int colHeight(vector<vector<int>>, int);
   Block suggestedBlock();
+  bool hold_on;
 
   friend std::ostream &operator<<(std::ostream &out, const QuadrisModel &model);
 };

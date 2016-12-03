@@ -3,7 +3,7 @@
 #include "window.h"
 using namespace std;
 
-GraphicsDisplay::GraphicsDisplay(): xw{Xwindow()} {
+GraphicsDisplay::GraphicsDisplay(bool hold): xw{Xwindow()}, hold{hold} {
   // Game border:
   xw.fillRectangle(130, 10, 5, 480, Xwindow::Black);
   xw.fillRectangle(130, 10, 355, 5, Xwindow::Black);
@@ -56,7 +56,7 @@ void GraphicsDisplay::drawLegend(int level, int score, int high_score, vector<ve
   int y_margin = 60;
   int x_margin = 10;
   // clear legend
-  xw.fillRectangle(x_margin, 40, 115, 250, Xwindow::White);
+  xw.fillRectangle(x_margin, 40, 115, 280, Xwindow::White);
 
   // draw legend, right padded
   string lvl = "Level:";
@@ -72,12 +72,13 @@ void GraphicsDisplay::drawLegend(int level, int score, int high_score, vector<ve
   for (auto cell: next_cells) {
     xw.fillRectangle(x_margin + cell[0]*20, y_margin + cell[1]*20, 19, 19, next_colour);
   }
-
-  xw.drawString(x_margin, y_margin + 50, "Hold:");
-  // clear and draw hold block
-  y_margin = 230;
-  for (auto cell: hold_cells) {
-    xw.fillRectangle(x_margin + cell[0]*20, y_margin + cell[1]*20, 19, 19, hold_colour);
+  if (hold) {
+    xw.drawString(x_margin, y_margin + 70, "Hold:");
+    // clear and draw hold block
+    y_margin = 260;
+    for (auto cell: hold_cells) {
+      xw.fillRectangle(x_margin + cell[0]*20, y_margin + cell[1]*20, 19, 19, hold_colour);
+    }
   }
 }
 

@@ -11,6 +11,7 @@ public:
 private:
   std::unique_ptr<QuadrisModel> model;
   bool text;
+  bool hold;
   int seed;
   std::string script_file;
   int start_level;

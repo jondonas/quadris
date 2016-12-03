@@ -12,8 +12,8 @@ using namespace std;
 
 int QuadrisModel::high_score = 0;
 
-QuadrisModel::QuadrisModel(bool text, int seed, string script_file, int start_level):
-td{make_shared<TextDisplay>()}, gd{nullptr}, current_block{Block(BlockType::Empty, td, gd, 0)}, next_block{BlockType::Empty}, hint_block{Block(BlockType::Empty, td, gd, 0)}, block_random{true}, level{0}, seed{seed}, lost{false} {
+QuadrisModel::QuadrisModel(bool text, int seed, string script_file, int start_level, bool hold_on):
+td{make_shared<TextDisplay>()}, gd{nullptr}, current_block{Block(BlockType::Empty, td, gd, 0)}, next_block{BlockType::Empty}, hint_block{Block(BlockType::Empty, td, gd, 0)}, block_random{true}, level{0}, seed{seed}, lost{false}, hold_on{hold_on} {
   if (start_level >= 0 && start_level <= 4)
     level = start_level;
   
@@ -25,7 +25,7 @@ td{make_shared<TextDisplay>()}, gd{nullptr}, current_block{Block(BlockType::Empt
     exit(1);
 
   if (!text)
-    gd = make_shared<GraphicsDisplay>();
+    gd = make_shared<GraphicsDisplay>(hold_on);
   srand(seed);
   held_block = BlockType::Empty;
   // load two random blocks: one for current and one for next block
@@ -155,19 +155,27 @@ void QuadrisModel::hold() {
     nextBlock();
   } else {
     BlockType type = current_block.getType();
-    swapType(held_block);
-    held_block = type;
+    if (swapType(held_block)) {
+      held_block = type;
+    }
   }
-  drawLegend();
+  if (gd)
+    drawLegend();
 }
 
-void QuadrisModel::swapType(BlockType t) {
+bool QuadrisModel::swapType(BlockType t) {
   int x = current_block.getX();
   int y = current_block.getY();
   int level = current_block.getLevel();
-  current_block.clear();
+  Block temp_block = current_block;
   current_block = Block(t, td, gd, level, x, y);
-  current_block.draw();
+  if (canMove(0, 0)) {
+    temp_block.clear();
+    current_block.draw();
+    return true;
+  }
+  current_block = temp_block;
+  return false;
 }
 
 bool QuadrisModel::isOver() {
@@ -423,8 +431,10 @@ std::ostream &operator<<(std::ostream &out, const QuadrisModel &model) {
   cout << "  -----------" << endl;
   cout << "Next:" << endl;
   printBlock(out, model.next_block);
-  cout << "Hold:" << endl;
-  printBlock(out, model.held_block);
+  if(model.hold_on) {
+    cout << "Hold:" << endl;
+    printBlock(out, model.held_block);
+  }
   return out;
 }
 
