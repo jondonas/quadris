@@ -4,7 +4,7 @@
 #include "quadris.h"
 using namespace std;
 
-Quadris::Quadris(int argc, char *argv[]): text{false}, seed{0}, script_file{"sequence.txt"}, start_level{0}, hold{false} {
+Quadris::Quadris(int argc, char *argv[]): text{false}, seed{0}, script_file{"sequence.txt"}, start_level{0}, hold{false}, ai{false} {
   for (int i = 1; i < argc; ++i) {
     string arg(argv[i]);
     if (arg == "-text") {
@@ -26,6 +26,8 @@ Quadris::Quadris(int argc, char *argv[]): text{false}, seed{0}, script_file{"seq
       usage();
     else if (arg == "-hold")
       hold = true;
+    else if (arg == "-ai")
+      ai = true;
     else {
       cout << "**INVALID OPTION**" << endl;
       usage();
@@ -68,7 +70,7 @@ void Quadris::start() {
       model->setRandom(true);
     else if (cmdMatch(cmd, 2, "restart"))
       init();
-    else if (cmdMatch(cmd, 2, "hint")) {
+    else if (ai && cmdMatch(cmd, 2, "hint")) {
       last_hint = true;
       model->getHint();
     } else if (hold && cmdMatch(cmd, 2, "hold"))
@@ -142,7 +144,8 @@ void Quadris::usage() {
   "  -scriptfile [file]       Use [file] instead of the default sequence.txt\n"
   "  -startlevel [n]          Start game in level [n]\n"
   "  -h  or  --help           Display this help message\n"
-  "  -hold                    Play with the hold feature(bonus!)\n"
+  "  -hold                    Play with the hold feature (bonus!)\n"
+  "  -ai                      Enable AI feature\n\n"
   
   "In-game commands:\n"
   "  left\n"
@@ -158,6 +161,7 @@ void Quadris::usage() {
   "  random                   Make levels 3 and 4 random (default)\n"
   "  sequence [file]          Change sequence file\n"
   "  I, J, L, etc.            Replace current block with specified block\n"
+  "  hold                     Holds the current block for later use\n"
   "  hint                     Display a hint\n"
   "  auto                     Makes the best move for you\n\n"
   
