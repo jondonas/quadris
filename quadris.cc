@@ -70,7 +70,7 @@ void Quadris::start() {
       model->setRandom(true);
     else if (cmdMatch(cmd, 2, "restart"))
       init();
-    else if (ai && cmdMatch(cmd, 2, "hint")) {
+    else if (cmdMatch(cmd, 2, "hint")) {
       last_hint = true;
       model->getHint();
     } else if (hold && cmdMatch(cmd, 2, "hold"))
@@ -91,7 +91,7 @@ void Quadris::start() {
       model->clockwise(mult);
     else if (cmdMatch(cmd, 2, "counterclockwise"))
       model->cclockwise(mult);
-    else if (cmdMatch(cmd, 1, "auto"))
+    else if (ai && cmdMatch(cmd, 1, "auto"))
       model->automate(mult);
     else if (cmd == "I")
       model->swapType(BlockType::IBlock);
