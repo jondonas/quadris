@@ -4,11 +4,11 @@
 
 Made for CS246, Fall 2016. University of Waterloo.
 
-<img src="http://i.imgur.com/ejliJEK.png" width="400">
+<kbd><img src="http://i.imgur.com/ejliJEK.png" width="400"></kbd>
 
 As a bonus feature, we also built an AI that played the game (usually) better than we could. In testing, the AI would play up to 7000 successful moves on the hardest level before losing.
 
-<img src="http://i.imgur.com/xZ0rk1h.gif" width="400">
+<kbd><img src="http://i.imgur.com/xZ0rk1h.gif" width="400"></kbd>
 
 Here is the usage:
 
