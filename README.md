@@ -1,8 +1,8 @@
 # Quadris
 
-#### By Ryan Quanz and Jonathan Donas.
+#### By Jonathan Donas and Ryan Quanz.
 
-Made for CS246, Winter 2016. University of Waterloo.
+Made for CS246, Fall 2016. University of Waterloo.
 
 <img src="http://i.imgur.com/ejliJEK.png" width="400">
 
